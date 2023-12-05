@@ -15,8 +15,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// 로그인
+// 회원가입
 export const authenticateUser = async (email, password) => {
+  console.log('email, password: ', email, password);
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     console.log(userCredential);
