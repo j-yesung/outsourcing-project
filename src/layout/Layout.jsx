@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import { Navigate, Outlet } from 'react-router-dom';
 import Footer from './Footer';
+// import Footer from './Footer';
 
 const Layout = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -13,7 +14,6 @@ const Layout = () => {
         <>
           <Header />
           <Outlet />
-          <Footer />
         </>
       ) : (
         <Navigate to="/" replace />
