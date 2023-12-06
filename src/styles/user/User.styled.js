@@ -24,6 +24,7 @@ export const Wrapper = styled.div`
 `;
 export const Logo = styled.h1`
   display: flex;
+  cursor: pointer;
   font-size: 30px;
   margin-bottom: 10px;
   justify-content: center;

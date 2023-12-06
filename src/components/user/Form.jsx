@@ -2,13 +2,16 @@ import React from 'react';
 import { loginUser, registerUser } from 'api/firebase/firebase';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import useInput from 'hooks/useInput';
 import useValid from 'hooks/useValid';
 import * as S from '../../styles/user/User.styled';
+import { setUserInfo } from 'store/modules/authSlice';
 
 const Form = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const [email, onChangeEmail] = useInput();
   const [password, onChangePassword] = useInput();
@@ -32,15 +35,14 @@ const Form = () => {
   const loginHandler = async (e) => {
     e.preventDefault();
     const response = await loginUser(email, password);
-    localStorage.setItem(
-      'userInfo',
-      JSON.stringify({
-        accessToken: response.accessToken,
-        nickname: response.displayName,
-        email: response.email,
-        image: response.photoURL
-      })
-    );
+    const userInfo = {
+      accessToken: response.accessToken,
+      nickname: response.displayName,
+      email: response.email,
+      image: response.photoURL
+    };
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    dispatch(setUserInfo(userInfo));
     toast.success(`${response.displayName}님 반가워요!`);
     if (response.accessToken) navigate('/');
     try {
@@ -53,7 +55,7 @@ const Form = () => {
     <>
       <S.Wrapper>
         <S.Form>
-          <S.Logo>찾기 쉽죠?</S.Logo>
+          <S.Logo onClick={() => navigate('/')}>찾기 쉽죠?</S.Logo>
           <S.Input type="text" name="email" value={email} placeholder="이메일" onChange={onChangeEmail} required />
           {emailErrorMessage && <S.Caption>{emailErrorMessage}</S.Caption>}
           <S.Input
