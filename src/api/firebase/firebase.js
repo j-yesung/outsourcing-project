@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import userIcon from '../../assets/user.svg';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -16,12 +17,21 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 // 회원가입
-export const authenticateUser = async (email, password) => {
-  console.log('email, password: ', email, password);
+export const registerUser = async (email, password, nickname) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(userCredential);
+    await updateProfile(userCredential.user, { displayName: nickname, photoURL: userIcon });
+    return userCredential.user;
   } catch (error) {
-    console.log(error);
+    console.log('error: ', error.message);
+  }
+};
+// 로그인
+export const loginUser = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
+  } catch (error) {
+    console.log('error: ', error.message);
   }
 };
