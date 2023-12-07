@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { collection, doc, getDocs, getFirestore, query, setDoc, where } from 'firebase/firestore';
 import userIcon from '../../assets/user.svg';
 
 const firebaseConfig = {
@@ -13,25 +13,98 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const collectionRef = collection(db, 'fnb');
 
-// 회원가입
+/**
+ * 회원가입
+ * @param {*} email
+ * @param {*} password
+ * @param {*} nickname
+ * @returns
+ */
 export const registerUser = async (email, password, nickname) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(userCredential.user, { displayName: nickname, photoURL: userIcon });
     return userCredential.user;
   } catch (error) {
-    console.log('error: ', error.message);
+    console.log('error: ', error);
+    throw error;
   }
 };
-// 로그인
+/**
+ * 로그인
+ * @param {*} email
+ * @param {*} password
+ * @returns
+ */
 export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     return userCredential.user;
   } catch (error) {
-    console.log('error: ', error.message);
+    console.log('error: ', error);
+    throw error;
+  }
+};
+
+/**
+ * fnb 읽어오기
+ * @returns 파이어스토어에 있는 데이터들
+ */
+export const getMapList = async () => {
+  try {
+    const querySnapshot = await getDocs(collectionRef);
+    const mapList = [];
+    querySnapshot.forEach((doc) => {
+      mapList.push(doc.data());
+    });
+    return mapList;
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+export const getSpecificMapList = async () => {
+  try {
+    const querySnapshot = await getDocs(collectionRef);
+    const specificValue = '음식점'; // TODO: 동적으로 변경 (변수 지정 -> 카테고리를 클릭했을 때에 value)
+    const documentsWithSpecificValue = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const specificFieldName = 'category_group_name';
+
+      // 특정 필드 값과 일치하는 문서
+      if (data[specificFieldName] === specificValue) {
+        documentsWithSpecificValue.push({
+          id: doc.id,
+          data: data
+        });
+      }
+    });
+
+    return documentsWithSpecificValue;
+  } catch (error) {
+    console.error('에러 😵', error);
+  }
+};
+
+/**
+ * fnb 추가 하기
+ * getItem에서 가져온 데이터를 Firestore에 추가
+ * @param {*} data 15개의 장소 (장소는 검색 키워드를 통해 나온 곳들)
+ * @param {*} DocId 직접 지정한 문서 ID
+ */
+export const addToMapListDatabase = async (data, DocId) => {
+  try {
+    const docRef = doc(db, 'fnb', DocId);
+    await setDoc(docRef, data);
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
   }
 };

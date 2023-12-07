@@ -1,8 +1,6 @@
 import Form from 'components/user/Form';
 import React from 'react';
 
-const Signup = () => {
-  return <Form />;
-};
+const Signup = () => <Form />;
 
 export default Signup;
