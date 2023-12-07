@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setMapInfo } from 'store/modules/mapInfoSlice';
+import * as S from '../../styles/kakaoMap/kakaoMap.styled';
 
 const Map = () => {
   const dispatch = useDispatch();
@@ -110,32 +111,31 @@ const Map = () => {
     geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
   };
 
-  const sendData = (data) => {
-    navigate(`/detail/${data.id}`);
-  };
-
   return (
     <div>
-      <span>키워드 앞에 "지역구"를 붙여주시면 해당 지역으로 검색이 됩니다. (ex. 종로구 치킨)</span>
-      <br />
-      <input
-        type="text"
-        placeholder="검색어를 입력하세요."
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        onKeyPress={handleEnterKeyPress}
-      />
-      <button onClick={searchPlaces}>검색</button>
-      <br />
-      <br />
+      <S.SearchWrapper>
+        <S.GuideText>키워드 앞에 "지역구"를 붙여주시면 해당 지역으로 검색됩니다. (ex. 종로구 치킨)</S.GuideText>
+        <S.SearchElement>
+          <input
+            type="text"
+            placeholder="검색어를 입력하세요."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyPress={handleEnterKeyPress}
+          />
+          <button onClick={searchPlaces}>검색</button>
+        </S.SearchElement>
+      </S.SearchWrapper>
 
-      <ul>
-        {places.map((place, index) => (
-          <li key={index} onClick={() => sendData(place)}>
-            {place.place_name} 👉 {place.address_name} 👉 {place.category_group_name}
-          </li>
-        ))}
-      </ul>
+      <div>
+        <S.SearchListWrapper>
+          {places.map((place) => (
+            <S.SearchList key={place.id} onClick={() => navigate(`/detail/${place.id}`)}>
+              {place.place_name}
+            </S.SearchList>
+          ))}
+        </S.SearchListWrapper>
+      </div>
 
       <div id="map" style={{ width: '0px', height: '0px' }} />
     </div>

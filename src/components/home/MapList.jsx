@@ -1,38 +1,44 @@
 import useKakaoMap from 'hooks/useKakaoMap';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import * as S from '../../styles/pages/Detail.styled';
 import { addToMapListDatabase } from 'api/firebase/firebase';
 import { ExtractCategoryNames } from 'utils/regex';
+import { useSelector } from 'react-redux';
 
 const MapList = () => {
   const params = useParams();
-  const getItem = JSON.parse(localStorage.getItem('mapInfo'));
-  const findData = getItem.find((data) => data.id === params.id);
   const mapRef = useRef(null);
+  const getItem = JSON.parse(localStorage.getItem('mapInfo'));
+  const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
+  const findData = getItem.find((data) => data.id === params.id);
+  const homeData = fnbData.find((data) => data.id === params.id);
+  const originData = findData === undefined ? homeData : findData;
 
-  useKakaoMap(findData, mapRef);
-  addToMapListDatabase(findData, ExtractCategoryNames(findData));
+  useKakaoMap(originData, mapRef);
+  useEffect(() => {
+    addToMapListDatabase(originData, ExtractCategoryNames(originData));
+  }, []);
 
   return (
     <>
-      {findData !== null ? (
+      {originData !== undefined ? (
         <>
           <S.TopWrapper>
             <div ref={mapRef} style={{ width: '300px', height: '200px', borderRadius: '20px' }} />
             <S.DetailWrapper>
-              <S.PlaceName>{findData.place_name}</S.PlaceName>
+              <S.PlaceName>{originData.place_name}</S.PlaceName>
               <S.PlaceInfo>
-                <span>{findData.road_address_name}</span>
-                <span>{findData.address_name}</span>
-                <span>{findData.phone}</span>
+                <span>{originData.road_address_name}</span>
+                <span>{originData.address_name}</span>
+                <span>{originData.phone}</span>
               </S.PlaceInfo>
             </S.DetailWrapper>
           </S.TopWrapper>
           <hr />
         </>
       ) : (
-        <div>loading...</div>
+        <div>...loading</div>
       )}
     </>
   );
