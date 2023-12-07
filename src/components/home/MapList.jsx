@@ -1,19 +1,18 @@
 import useKakaoMap from 'hooks/useKakaoMap';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import * as S from '../../styles/pages/Detail.styled';
 import { addToMapListDatabase } from 'api/firebase/firebase';
+import { ExtractCategoryNames } from 'utils/regex';
 
 const MapList = () => {
   const params = useParams();
   const getItem = JSON.parse(localStorage.getItem('mapInfo'));
   const findData = getItem.find((data) => data.id === params.id);
   const mapRef = useRef(null);
-  const DocId = findData.id; // 문서 ID 지정
-  console.log('findData: ', findData);
 
   useKakaoMap(findData, mapRef);
-  addToMapListDatabase(findData, DocId);
+  addToMapListDatabase(findData, ExtractCategoryNames(findData));
 
   return (
     <>

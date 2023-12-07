@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { collection, doc, getDocs, getFirestore, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import userIcon from '../../assets/user.svg';
 
 const firebaseConfig = {
@@ -68,23 +68,16 @@ export const getMapList = async () => {
   }
 };
 
-export const getSpecificMapList = async () => {
+export const getSpecificMapList = async (name) => {
   try {
     const querySnapshot = await getDocs(collectionRef);
-    const specificValue = '음식점'; // TODO: 동적으로 변경 (변수 지정 -> 카테고리를 클릭했을 때에 value)
+    const specificValue = name; // TODO: 동적으로 변경 (변수 지정 -> 카테고리를 클릭했을 때에 value)
     const documentsWithSpecificValue = [];
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      const specificFieldName = 'category_group_name';
-
       // 특정 필드 값과 일치하는 문서
-      if (data[specificFieldName] === specificValue) {
-        documentsWithSpecificValue.push({
-          id: doc.id,
-          data: data
-        });
-      }
+      if (data['category_group_name'] === specificValue) documentsWithSpecificValue.push({ id: doc.id, data: data });
     });
 
     return documentsWithSpecificValue;
@@ -99,9 +92,9 @@ export const getSpecificMapList = async () => {
  * @param {*} data 15개의 장소 (장소는 검색 키워드를 통해 나온 곳들)
  * @param {*} DocId 직접 지정한 문서 ID
  */
-export const addToMapListDatabase = async (data, DocId) => {
+export const addToMapListDatabase = async (data, docId) => {
   try {
-    const docRef = doc(db, 'fnb', DocId);
+    const docRef = doc(db, 'fnb', docId);
     await setDoc(docRef, data);
   } catch (error) {
     console.error('공습 경보 😵', error);
