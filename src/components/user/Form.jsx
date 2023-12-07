@@ -1,18 +1,24 @@
-import { authenticateUser, registerUser } from 'api/firebase/firebase';
-import useInput from 'hooks/useInput';
 import React from 'react';
+import { loginUser, registerUser } from 'api/firebase/firebase';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
+import useInput from 'hooks/useInput';
+import useValid from 'hooks/useValid';
+import * as S from '../../styles/user/User.styled';
+import { setUserInfo } from 'store/modules/authSlice';
 
 const Form = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-
-  const [email, onChangeEmailHandler] = useInput();
-  const [password, onChangePasswordHandler] = useInput();
-  const [nickname, onChangeNicknameHandler] = useInput();
-  const [local, onChangeLocalHandler] = useInput();
-
-  // params로 회원가입, 로그인 분기처리 진행하세요.
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const [email, onChangeEmail] = useInput();
+  const [password, onChangePassword] = useInput();
+  const [passwordChk, onChangePasswordChk] = useInput();
+  const [nickname, onChangeNickname] = useInput();
+  const { isValid, emailErrorMessage, passwordErrorMessage } = useValid(email, password, passwordChk, nickname);
+  const isPathAvailability = location.pathname === '/login';
 
   // 회원가입 함수
   const signupHandler = async (e) => {
@@ -29,81 +35,105 @@ const Form = () => {
       console.log(error.message);
     }
   };
+
+  // 로그인 함수
   const loginHandler = async (e) => {
     e.preventDefault();
+    const response = await loginUser(email, password);
+    const userInfo = {
+      accessToken: response.accessToken,
+      nickname: response.displayName,
+      email: response.email,
+      image: response.photoURL
+    };
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    dispatch(setUserInfo(userInfo));
+    toast.success(`${response.displayName}님 반가워요!`);
+    if (response.accessToken) navigate('/');
     try {
-      await registerUser(email, password);
-      console.log('result', registerUser);
-      navigate('/');
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
-  // 로그인 함수
-
   return (
     <>
-      <form>
-        {/* 나중엔 flex로 내릴 예정. 임시 br 처리 */}
-        <input type="text" name="email" value={email} placeholder="이메일" onChange={onChangeEmailHandler} required />
-        <br />
-        <input
-          type="password"
-          name="password"
-          value={password}
-          placeholder="비밀번호"
-          onChange={onChangePasswordHandler}
-          required
-        />
-        <br />
-        {location.pathname === '/signup' && (
+      <S.Wrapper>
+        <S.Form>
+          <S.Logo onClick={() => navigate('/')}>찾기 쉽죠?</S.Logo>
+          <S.Input type="text" name="email" value={email} placeholder="이메일" onChange={onChangeEmail} required />
+          {emailErrorMessage && <S.Caption>{emailErrorMessage}</S.Caption>}
+          <S.Input
+            type="password"
+            name="password"
+            minLength={6}
+            maxLength={10}
+            value={password}
+            placeholder="비밀번호"
+            onChange={onChangePassword}
+            required
+          />
+          {location.pathname === '/signup' && (
+            <>
+              <S.Input
+                type="password"
+                name="passwordChk"
+                minLength={6}
+                maxLength={10}
+                value={passwordChk}
+                placeholder="비밀번호 확인"
+                onChange={onChangePasswordChk}
+                required
+              />
+              {passwordErrorMessage && <S.Caption>{passwordErrorMessage}</S.Caption>}
+              <S.Input
+                type="text"
+                name="nickname"
+                minLength={2}
+                maxLength={6}
+                value={nickname}
+                placeholder="닉네임"
+                onChange={onChangeNickname}
+                required
+              />
+            </>
+          )}
+        </S.Form>
+        {isPathAvailability ? (
           <>
-            <input
-              type="text"
-              name="nickname"
-              value={nickname}
-              placeholder="닉네임"
-              onChange={onChangeNicknameHandler}
-              required
-            />
-            <div>
-              <select value={local} onChange={onChangeLocalHandler}>
-                <option>서울</option>
-                <option>인천</option>
-                <option>경기도</option>
-              </select>
-            </div>
-            <div>
-              <select value={local} onChange={onChangeLocalHandler}>
-                <option>음식점</option>
-                <option>베이커리</option>
-                <option>카페</option>
-                <option>명소</option>
-              </select>
-            </div>
+            <S.Button
+              type="submit"
+              onClick={loginHandler}
+              disabled={!isValid}
+              $active={!isValid}
+              $isWidth={isPathAvailability}
+            >
+              로그인
+            </S.Button>
+            <hr />
+            <S.LinkWrapper>
+              <Link to="/signup">회원가입하러 가기</Link>
+            </S.LinkWrapper>
+          </>
+        ) : (
+          <>
+            <S.Button
+              type="submit"
+              onClick={signupHandler}
+              disabled={!isValid}
+              $active={!isValid}
+              $isWidth={isPathAvailability}
+            >
+              회원가입
+            </S.Button>
+            <hr />
+            <S.LinkWrapper>
+              <Link to="/login">로그인하러 가기</Link>
+            </S.LinkWrapper>
           </>
         )}
-      </form>
-      {location.pathname === '/login' ? (
-        <>
-          <button type="submit" onClick={loginHandler}>
-            로그인
-          </button>
-          <div>
-            <Link to="/signup">회원가입하러 가기</Link>
-          </div>
-        </>
-      ) : (
-        <>
-          <button type="submit" onClick={signupHandler}>
-            회원가입
-          </button>
-          <div>
-            <Link to="/login">로그인하러 가기</Link>
-          </div>
-        </>
-      )}
+      </S.Wrapper>
+      <ToastContainer autoClose={1000} />
     </>
   );
 };

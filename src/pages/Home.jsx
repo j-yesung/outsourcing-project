@@ -1,10 +1,10 @@
+import FnbList from 'components/home/FnbList';
 import React from 'react';
-import * as S from './Home.styled';
 
 const Home = () => {
   return (
     <>
-      <div>Home</div>
+      <FnbList />
     </>
   );
 };

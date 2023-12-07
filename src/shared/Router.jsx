@@ -1,9 +1,10 @@
 import Layout from 'layout/Layout';
+import Detail from 'pages/Detail';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Signup from 'pages/Signup';
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 const Router = () => {
   return (
@@ -13,7 +14,9 @@ const Router = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/detail/:id" element={<Detail />} />
         </Route>
+        <Route path="*" element={<Navigate replace to="/login" />} />
       </Routes>
     </BrowserRouter>
   );

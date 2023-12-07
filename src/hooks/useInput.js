@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const useInput = (validator) => {
   const [value, setValue] = useState('');
@@ -9,24 +9,9 @@ const useInput = (validator) => {
     return emailRegex.test(email) ? '' : '올바른 이메일 주소를 입력해주세요.';
   };
 
-  const handleChange = (e) => {
-    const newValue = e.target.value;
+  const onChangeHanler = (e) => setValue(e.target.value);
 
-    if (validator === 'email') {
-      setError(validateEmail(newValue));
-    } else {
-      setError(validator(newValue));
-    }
-
-    setValue(newValue);
-  };
-  return {
-    value,
-    error,
-    onChange: handleChange,
-    isValid: error === '',
-    setValue // setValue를 반환하여 외부에서 직접 값 설정 가능
-  };
+  return [value, onChangeHanler];
 };
 
 export default useInput;
