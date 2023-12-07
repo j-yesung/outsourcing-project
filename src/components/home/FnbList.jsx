@@ -1,4 +1,4 @@
-import { getMapList, getSpecificMapList } from 'api/firebase/firebase';
+import { getMapList } from 'api/firebase/firebase';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFnbInfo } from 'store/modules/mapInfoSlice';
@@ -32,13 +32,14 @@ const FnbList = () => {
   return (
     <>
       {fnbData && (
-        <S.HomeWrapper>
-          {fnbData.map((item) => (
-            <S.FnbList key={item.id} onClick={() => navigate(`/detail/${item.id}`)}>
+        <S.FnbWrapper>
+          {fnbData.map((item, index) => (
+            <S.FnbList key={index} onClick={() => navigate(`/detail/${item.id}`)}>
+              {/* 이미지가 들어가야 합니다. */}
               <p>{item.place_name}</p>
             </S.FnbList>
           ))}
-        </S.HomeWrapper>
+        </S.FnbWrapper>
       )}
     </>
   );
