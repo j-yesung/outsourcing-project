@@ -1,4 +1,5 @@
 import Layout from 'layout/Layout';
+import Detail from 'pages/Detail';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Signup from 'pages/Signup';
@@ -14,7 +15,8 @@ const Router = () => {
         <Route path="/write" element={<Write />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Layout />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/detail/:id" element={<Detail />} />
         </Route>
         <Route path="*" element={<Navigate replace to="/login" />} />
       </Routes>
