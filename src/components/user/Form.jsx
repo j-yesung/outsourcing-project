@@ -22,15 +22,20 @@ const Form = () => {
 
   // 회원가입 함수
   const signupHandler = async (e) => {
+    if (password !== passwordChk) {
+      console.error('비밀번호가 일치하지 않습니다.');
+      return;
+    }
     e.preventDefault();
-
     try {
       await registerUser(email, password, nickname);
+      console.log('result', registerUser);
       navigate('/login');
     } catch (error) {
-      console.error(error.message);
+      console.log(error.message);
     }
   };
+
   // 로그인 함수
   const loginHandler = async (e) => {
     e.preventDefault();
