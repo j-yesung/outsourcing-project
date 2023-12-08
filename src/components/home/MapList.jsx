@@ -1,6 +1,6 @@
 import useKakaoMap from 'hooks/useKakaoMap';
 import React, { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import * as S from '../../styles/pages/Detail.styled';
 import { addToMapListDatabase } from 'api/firebase';
 import { ExtractCategoryNames } from 'utils/regex';
@@ -13,7 +13,6 @@ const MapList = () => {
   const searchData = JSON.parse(localStorage.getItem('mapInfo')).find((data) => data.id === params.id);
   const detailData = JSON.parse(localStorage.getItem('ALL_DATA')).find((data) => data.id === params.id);
   const originData = searchData === undefined ? detailData : searchData;
-  console.log('detailData: ', originData);
 
   useKakaoMap(originData, mapRef);
   useEffect(() => {
@@ -39,6 +38,10 @@ const MapList = () => {
                 <span>{originData.road_address_name}</span>
                 <span>{originData.address_name}</span>
                 <span>{originData.phone}</span>
+                <Link to={originData.place_url} target="_blank" rel="noopener noreferrer">
+                  👉 상세 페이지로 이동
+                </Link>
+                {/* <a href={originData.place_url}></a> */}
               </S.PlaceInfo>
             </S.DetailWrapper>
           </S.TopWrapper>

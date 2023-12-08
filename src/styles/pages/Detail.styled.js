@@ -2,12 +2,12 @@ const { default: styled } = require('styled-components');
 
 export const TopWrapper = styled.div`
   display: inline-flex;
-  margin-top: 30px;
   border-radius: 10px;
+  margin: 30px 0 0 700px;
 `;
 export const DetailWrapper = styled.div`
   display: flex;
-  padding: 80px 0px 0px 30px;
+  padding: 60px 0px 0px 30px;
   flex-direction: column;
   font-family: 'LINESeedKR-Bd';
 `;
@@ -20,4 +20,11 @@ export const PlaceInfo = styled.div`
   display: flex;
   font-size: 15px;
   flex-direction: column;
+  a {
+    color: black;
+    text-decoration: none;
+    &:hover {
+      color: #6db9ef;
+    }
+  }
 `;
