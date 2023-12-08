@@ -1,3 +1,4 @@
+import { getUser, logoutUser } from 'api/firebase';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -28,10 +29,13 @@ const Header = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
   const handleLogout = () => {
+    // logoutUser();
     localStorage.removeItem('userInfo');
-    dispatch(setUserInfo(null));
+    // dispatch(setUserInfo(null));
     navigate('/');
   };
+
+  // console.log('>>>>> ', getUser());
 
   return (
     <>

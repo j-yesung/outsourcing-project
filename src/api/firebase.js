@@ -47,12 +47,28 @@ export const registerUser = async (email, password, nickname) => {
 export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential.user;
+    const userInfo = {
+      accessToken: userCredential.user.accessToken,
+      nickname: userCredential.user.displayName,
+      email: userCredential.user.email,
+      image: userCredential.user.photoURL
+    };
+    return userInfo;
   } catch (error) {
     console.log('error: ', error);
     throw error;
   }
 };
+
+/**
+ * @returns 현재 유저 정보 가져오기
+ */
+export const getUser = () => auth.currentUser;
+
+/**
+ * @returns 로그아웃
+ */
+export const logoutUser = () => auth.signOut();
 
 /**
  * fnb 읽어오기
