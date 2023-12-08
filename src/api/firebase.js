@@ -141,7 +141,7 @@ export const getComments = async () => {
  * @param {*} data 작성 댓글
  * @param {*} docId fnb 문서 ID
  */
-export const addToCommentDatabase = async (data) => {
+export const addComment = async (data) => {
   console.log('data: ', data);
   try {
     await addDoc(commentsRef, data);
@@ -156,7 +156,7 @@ export const addToCommentDatabase = async (data) => {
  * @param {*} id
  * @param {*} updateData
  */
-export const updatingComment = async (id, updateData) => {
+export const updateComment = async ({ id, updateData }) => {
   console.log('id, updateData: ', id, updateData);
   try {
     const docRef = doc(db, 'comments', id);
