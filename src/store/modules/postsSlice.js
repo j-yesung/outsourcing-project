@@ -6,7 +6,8 @@ const initialState = {
       title: '',
       contents: '',
       createdAt: '',
-      uid: ''
+      uid: '',
+      isEdit: false
     }
   ]
 };
@@ -20,9 +21,15 @@ export const postsSlice = createSlice({
     },
     getPost: (state, action) => {
       state.posts = action.payload;
+    },
+    editPost: (state, action) => {
+      state.posts.isEdit = action.payload;
+    },
+    deletePost: (state, action) => {
+      state.posts = action.payload;
     }
   }
 });
 
-export const { addPost, getPost } = postsSlice.actions;
+export const { addPost, getPost, editPost, deletePost } = postsSlice.actions;
 export default postsSlice.reducer;
