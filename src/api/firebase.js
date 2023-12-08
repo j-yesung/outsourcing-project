@@ -13,7 +13,7 @@ import {
   updateDoc,
   where
 } from 'firebase/firestore';
-import userIcon from '../../assets/user.svg';
+import userIcon from '../assets/user.svg';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
