@@ -2,6 +2,8 @@ import Layout from 'layout/Layout';
 import Detail from 'pages/Detail';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
+import Post from 'pages/Post';
+import PostDetail from 'pages/PostDetail';
 import Profile from 'pages/Profile';
 import Signup from 'pages/Signup';
 import Write from 'pages/Write';
@@ -19,6 +21,8 @@ const Router = () => {
           <Route path="/write" element={<Write />} />
           <Route path="/mypage" element={<Profile />} />
           <Route path="/detail/:id" element={<Detail />} />
+          <Route path="/post" element={<Post />} />
+          <Route path="/post/:id" element={<PostDetail />} />
         </Route>
         <Route path="*" element={<Navigate replace to="/login" />} />
       </Routes>
