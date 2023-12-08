@@ -2,6 +2,7 @@ import Layout from 'layout/Layout';
 import Detail from 'pages/Detail';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
+import Profile from 'pages/Profile';
 import Signup from 'pages/Signup';
 import Write from 'pages/Write';
 import React from 'react';
@@ -16,6 +17,7 @@ const Router = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/write" element={<Write />} />
+          <Route path="/mypage" element={<Profile />} />
           <Route path="/detail/:id" element={<Detail />} />
         </Route>
         <Route path="*" element={<Navigate replace to="/login" />} />

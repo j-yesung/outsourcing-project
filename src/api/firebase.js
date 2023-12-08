@@ -1,18 +1,7 @@
-import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  getFirestore,
-  orderBy,
-  query,
-  setDoc,
-  updateDoc,
-  where
-} from 'firebase/firestore';
+import { doc, addDoc, setDoc, getDocs, updateDoc, deleteDoc, collection, getFirestore } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
 import userIcon from '../assets/user.svg';
 
 const firebaseConfig = {
@@ -27,9 +16,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const fnbRef = collection(db, 'fnb');
-const commentsRef = collection(db, 'comments');
 const postsRef = collection(db, 'posts');
+const commentsRef = collection(db, 'comments');
 
 /**
  * 회원가입
@@ -208,4 +198,18 @@ export const getPosts = async () => {
     console.error('공습 경보 😵', error);
     throw error;
   }
+};
+
+/**
+ * 파일 업로드
+ * @param {*} file 업로드한 파일 참조 값
+ * @returns Storage에 저장된 파일 URL
+ */
+export const fileUpload = async (userInfo, file) => {
+  const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
+  await uploadBytes(imageRef, file);
+  const downloadURL = await getDownloadURL(imageRef);
+  // 유저 정보 업데이트
+  updateProfile(userInfo, { image: downloadURL });
+  return downloadURL;
 };

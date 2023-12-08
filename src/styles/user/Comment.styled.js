@@ -43,7 +43,7 @@ export const CommentButton = styled.button`
   background-color: #e31c5f;
 `;
 export const CommentContainer = styled.div`
-  border-bottom: 1px solid #b6bbc4;
+  /* border-bottom: 1px solid #b6bbc4; */
 `;
 export const CommentsList = styled.ul`
   margin-top: 20px;
