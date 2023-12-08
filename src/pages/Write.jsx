@@ -1,20 +1,14 @@
-import React, { useRef } from 'react';
-import Box from '@mui/material/Box';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/i18n/ko-kr';
-import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-
-import { addPosts } from 'api/firebase/firebase';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { addPosts } from 'api/firebase';
-import { useDispatch } from 'react-redux';
-
+import 'tui-color-picker/dist/tui-color-picker.css';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { Editor } from '@toast-ui/react-editor';
 import Content from 'components/home/Content';
-import { Timestamp } from 'firebase/firestore';
+import { addPosts } from '../api/firebase';
+import { useSelector } from 'react-redux';
+import '@toast-ui/editor/dist/i18n/ko-kr';
+import React, { useRef } from 'react';
+import Box from '@mui/material/Box';
 
 const colorSyntaxOptions = {
   preset: [
@@ -39,8 +33,6 @@ const colorSyntaxOptions = {
 
 const Write = () => {
   const auth = useSelector((state) => state.authSlice.userInfo);
-  console.log(auth);
-  const dispatch = useDispatch();
   // add post
   const editorRef = useRef();
   const titleRef = useRef();

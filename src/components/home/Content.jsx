@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
-import styled from 'styled-components';
-import { getPosts } from 'api/firebase/firebase';
-
-import { getPosts } from 'api/firebase';
-
-import { useDispatch, useSelector } from 'react-redux';
 import { getPost, editPost, deletePost } from 'store/modules/postsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { deletePosts, getPosts } from '../../api/firebase';
 import { getFormattedDate } from 'utils/date';
-import { deletePosts } from 'api/firebase/firebase';
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
 
 function Content() {
   // 전역상태에 있는 post 불러오기
