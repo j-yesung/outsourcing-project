@@ -11,7 +11,6 @@ const FnbList = () => {
   // const mapInfo = useSelector((state) => state.mapInfoSlice.mapInfo);
   // console.log('kakaoMapInfo: ', mapInfo);
   const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
-  console.log('fnbInfo: ', fnbData);
 
   useEffect(() => {
     const fetchData = async () => {
