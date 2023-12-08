@@ -7,7 +7,7 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import { addPosts } from 'api/firebase/firebase';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Content from 'components/home/Content';
 import { Timestamp } from 'firebase/firestore';
 
@@ -33,24 +33,29 @@ const colorSyntaxOptions = {
 };
 
 const Write = () => {
+  const auth = useSelector((state) => state.authSlice.userInfo);
+  console.log(auth);
   const dispatch = useDispatch();
   // add post
   const editorRef = useRef();
   const titleRef = useRef();
 
+  // click 버튼 눌렀을 때 동작
   const onClickHandler = async () => {
-    // data.preventDefault();
-    // addPosts(editorRef.current.getInstance().getMarkdown(), '1');
     try {
+      // 토스트에디터 내용 입력 부분 변수로 지정하기
       const editorIns = editorRef?.current?.getInstance();
       const contentMark = editorIns.getMarkdown();
+      // firebase에 추가할 post 객체로 선언
       const newPost = {
         title: titleRef.current.value,
         contents: contentMark,
         createdAt: Date.now(),
-        uid: ''
+        uid: auth.uid,
+        isEdit: false
       };
-      console.log(newPost);
+      // console.log(newPost);
+      // newPost객체를 addPosts를 이용하기 파이어베이스에 추가하기
       await addPosts(newPost);
     } catch (error) {
       console.log('error -> ', error);
@@ -64,9 +69,6 @@ const Write = () => {
           제목 <span className="ml-2 text-xs text-red-500"></span>
         </label>
         <input
-          // {...register('title', {
-          //   required: '필수 입력 사항입니다.'
-          // })}
           type="text"
           id="title"
           name="title"
