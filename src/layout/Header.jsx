@@ -25,7 +25,7 @@ const HeaderButtons = styled.div`
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userInfo = useSelector((state) => state.authSlice.userInfo);
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');

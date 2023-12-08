@@ -4,20 +4,27 @@ import { useParams } from 'react-router-dom';
 import * as S from '../../styles/pages/Detail.styled';
 import { addToMapListDatabase } from 'api/firebase/firebase';
 import { ExtractCategoryNames } from 'utils/regex';
-import { useSelector } from 'react-redux';
+import Comment from 'components/user/Comment';
 
 const MapList = () => {
   const params = useParams();
   const mapRef = useRef(null);
-  const getItem = JSON.parse(localStorage.getItem('mapInfo'));
-  const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
-  const findData = getItem.find((data) => data.id === params.id);
-  const homeData = fnbData.find((data) => data.id === params.id);
-  const originData = findData === undefined ? homeData : findData;
+
+  const searchData = JSON.parse(localStorage.getItem('mapInfo')).find((data) => data.id === params.id);
+  const detailData = JSON.parse(localStorage.getItem('ALL_DATA')).find((data) => data.id === params.id);
+  const originData = searchData === undefined ? detailData : searchData;
+  console.log('detailData: ', originData);
 
   useKakaoMap(originData, mapRef);
   useEffect(() => {
-    addToMapListDatabase(originData, ExtractCategoryNames(originData));
+    // 예외처리
+    if (originData.id === params.id) {
+      // console.log('추가 안함..');
+      return;
+    } else {
+      addToMapListDatabase(originData, ExtractCategoryNames(originData));
+      // console.log('추가..');
+    }
   }, []);
 
   return (
@@ -36,6 +43,7 @@ const MapList = () => {
             </S.DetailWrapper>
           </S.TopWrapper>
           <hr />
+          <Comment id={originData.id} /> {/* 댓글 컴포넌트 */}
         </>
       ) : (
         <div>...loading</div>
