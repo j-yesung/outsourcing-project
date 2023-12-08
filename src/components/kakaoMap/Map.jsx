@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setMapInfo } from 'store/modules/mapInfoSlice';
 import * as S from '../../styles/kakaoMap/kakaoMap.styled';
+import styled from 'styled-components';
 
 const Map = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [keyword, setKeyword] = useState('');
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [places, setPlaces] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentInfowindow, setCurrentInfowindow] = useState(null);
+  const selectedMarkerInfoWindow = useRef(null);
 
-  // TODO: 나중에 커스텀 훅 정리
-  // useKakaoMap({ x: 33.450701, y: 126.570667 }, document.getElementById('map'));
   useEffect(() => {
     const script = document.createElement('script');
     script.async = true;
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_API_KEY}`;
+    script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=88ac229e7abd107e56c0799e195683f1';
     document.head.appendChild(script);
 
     script.onload = () => {
@@ -29,6 +31,12 @@ const Map = () => {
 
       const initialMap = new window.kakao.maps.Map(container, options);
       setMap(initialMap);
+
+      window.kakao.maps.event.addListener(initialMap, 'click', function () {
+        if (selectedMarkerInfoWindow.current) {
+          selectedMarkerInfoWindow.current.close();
+        }
+      });
     };
 
     return () => {
@@ -36,12 +44,49 @@ const Map = () => {
     };
   }, []);
 
+  const displayMarker = (place, index) => {
+    if (map) {
+      const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      const marker = new window.kakao.maps.Marker({
+        map: map,
+        position: markerPosition
+      });
+
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        content: `<div class="customOverlay">${index + 1}</div>`,
+        position: markerPosition,
+        zIndex: 1
+      });
+
+      window.kakao.maps.event.addListener(marker, 'click', function () {
+        if (selectedMarkerInfoWindow.current) {
+          selectedMarkerInfoWindow.current.close();
+        }
+
+        const infowindowContent = `<div style="padding:5px;font-size:12px;">${place.place_name} - ${place.address_name}<br/>도로명 주소: ${place.road_address_name}</div>`;
+        const infowindow = new window.kakao.maps.InfoWindow({
+          content: infowindowContent
+        });
+        infowindow.open(map, marker);
+
+        selectedMarkerInfoWindow.current = infowindow;
+
+        customOverlay.setMap(null);
+      });
+
+      return { marker, customOverlay };
+    }
+  };
+
   const searchPlaces = () => {
     if (map && keyword) {
-      markers.forEach((marker) => marker.setMap(null));
-
+      markers.forEach((marker) => marker.marker.setMap(null));
       const ps = new window.kakao.maps.services.Places();
-      ps.keywordSearch(keyword, placesSearchCB);
+      const center = map.getCenter();
+      ps.keywordSearch(keyword, placesSearchCB, {
+        location: new window.kakao.maps.LatLng(center.getLat(), center.getLng()),
+        radius: 2000
+      });
     }
   };
 
@@ -52,45 +97,21 @@ const Map = () => {
       const newPlaces = [];
 
       for (let i = 0; i < data.length; i++) {
-        const marker = displayMarker(data[i]);
+        const { marker, customOverlay } = displayMarker(data[i], i);
         bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
-        newMarkers.push(marker);
+        newMarkers.push({ marker, customOverlay });
         newPlaces.push(data[i]);
       }
 
       setMarkers(newMarkers);
       map.setBounds(bounds);
-      localStorage.setItem('mapInfo', JSON.stringify(newPlaces));
-
+      // state
       setPlaces(newPlaces);
+      setSearchResults(newPlaces);
+      // localStorage
+      localStorage.setItem('mapInfo', JSON.stringify(newPlaces));
+      // redux
       dispatch(setMapInfo(newPlaces));
-    }
-  };
-
-  const displayMarker = (place) => {
-    if (map) {
-      const marker = new window.kakao.maps.Marker({
-        map: map,
-        position: new window.kakao.maps.LatLng(place.y, place.x)
-      });
-
-      window.kakao.maps.event.addListener(marker, 'click', function () {
-        searchDetailAddrFromCoords(marker.getPosition(), function (result, status) {
-          if (status === window.kakao.maps.services.Status.OK) {
-            const detailAddr = !!result[0].road_address
-              ? result[0].road_address.address_name
-              : result[0].address.address_name;
-
-            const infowindow = new window.kakao.maps.InfoWindow({
-              content: '<div style="padding:5px;font-size:12px;">' + place.place_name + '<br/>' + detailAddr + '</div>'
-            });
-
-            infowindow.open(map, marker);
-          }
-        });
-      });
-
-      return marker;
     }
   };
 
@@ -101,45 +122,119 @@ const Map = () => {
     }
   };
 
-  // const handlePlaceItemClick = (place) => {
-  //   const center = new window.kakao.maps.LatLng(place.y, place.x);
-  //   map.panTo(center);
-  // };
+  const handleCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const currentPosition = new window.kakao.maps.LatLng(latitude, longitude);
+          map.panTo(currentPosition);
 
-  const searchDetailAddrFromCoords = (coords, callback) => {
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+          if (currentInfowindow) {
+            currentInfowindow.close();
+          }
+
+          const currentLocationMarker = new window.kakao.maps.Marker({
+            map: map,
+            position: currentPosition
+          });
+
+          const infowindow = new window.kakao.maps.InfoWindow({
+            content: '<div style="padding:5px;font-size:15px;text-align:center;">현위치</div>'
+          });
+
+          setCurrentInfowindow(infowindow);
+
+          infowindow.open(map, currentLocationMarker);
+        },
+        (error) => {
+          console.error('현재위치 찾기 오류발생! 다른브라우저를 사용하세요!', error);
+        }
+      );
+    }
   };
 
+  console.log('>>>> ', searchResults);
+
   return (
-    <div>
-      <S.SearchWrapper>
-        <S.GuideText>키워드 앞에 "지역구"를 붙여주시면 해당 지역으로 검색됩니다. (ex. 종로구 치킨)</S.GuideText>
-        <S.SearchElement>
-          <input
+    <>
+      <GlobalStyle />
+      <Container>
+        <div>
+          <Input
             type="text"
             placeholder="검색어를 입력하세요."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             onKeyPress={handleEnterKeyPress}
           />
-          <button onClick={searchPlaces}>검색</button>
-        </S.SearchElement>
-      </S.SearchWrapper>
-
-      <div>
-        <S.SearchListWrapper>
-          {places.map((place) => (
-            <S.SearchList key={place.id} onClick={() => navigate(`/detail/${place.id}`)}>
-              {place.place_name}
-            </S.SearchList>
-          ))}
-        </S.SearchListWrapper>
-      </div>
-
-      <div id="map" style={{ width: '0px', height: '0px' }} />
-    </div>
+          <Button onClick={searchPlaces}>검색</Button>
+          <Button onClick={handleCurrentLocation}>현재위치</Button>
+          <ResultContainer $showResults={searchResults.length > 0}>
+            {searchResults.map((result, index) => (
+              <ResultItem key={index} onClick={() => navigate(`/detail/${result.id}`)}>
+                <p>
+                  {index + 1}. {result.place_name} - {result.address_name}
+                </p>
+                <p>도로명 주소: {result.road_address_name}</p>
+              </ResultItem>
+            ))}
+          </ResultContainer>
+        </div>
+        <MapContainer id="map" />
+      </Container>
+    </>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  padding: 20px;
+`;
+
+const Input = styled.input`
+  margin-right: 10px;
+`;
+
+const Button = styled.button`
+  margin-right: 10px;
+`;
+
+const MapContainer = styled.div`
+  width: 800px;
+  height: 600px;
+  margin-left: 20px;
+`;
+
+const ResultContainer = styled.div`
+  margin-top: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  display: ${(props) => (props.$showResults ? 'block' : 'none')};
+`;
+
+const ResultItem = styled.div`
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+`;
+const GlobalStyle = styled.div`
+  .customOverlay {
+    position: absolute;
+    bottom: 12px;
+    left: 6px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    font-weight: 20px;
+  }
+`;
 
 export default Map;
