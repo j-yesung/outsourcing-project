@@ -6,7 +6,7 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-import { addPosts } from 'api/firebase/firebase';
+import { addPosts } from 'api/firebase';
 import { useDispatch } from 'react-redux';
 import Content from 'components/home/Content';
 import { Timestamp } from 'firebase/firestore';

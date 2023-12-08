@@ -1,5 +1,5 @@
 import React from 'react';
-import { loginUser, registerUser } from 'api/firebase/firebase';
+import { loginUser, registerUser } from 'api/firebase';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';

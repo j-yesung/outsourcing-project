@@ -1,4 +1,4 @@
-import { addToCommentDatabase, deleteComment, getComments, updatingComment } from 'api/firebase/firebase';
+import { addToCommentDatabase, deleteComment, getComments, updatingComment } from 'api/firebase';
 import React, { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getFormattedDate } from 'utils/date';

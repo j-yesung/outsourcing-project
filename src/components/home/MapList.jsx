@@ -2,7 +2,7 @@ import useKakaoMap from 'hooks/useKakaoMap';
 import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import * as S from '../../styles/pages/Detail.styled';
-import { addToMapListDatabase } from 'api/firebase/firebase';
+import { addToMapListDatabase } from 'api/firebase';
 import { ExtractCategoryNames } from 'utils/regex';
 import Comment from 'components/user/Comment';
 
