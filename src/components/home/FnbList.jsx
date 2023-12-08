@@ -1,4 +1,4 @@
-import { getMapList } from 'api/firebase/firebase';
+import { getMapList } from 'api/firebase';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFnbInfo } from 'store/modules/mapInfoSlice';
@@ -11,7 +11,6 @@ const FnbList = () => {
   // const mapInfo = useSelector((state) => state.mapInfoSlice.mapInfo);
   // console.log('kakaoMapInfo: ', mapInfo);
   const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
-  console.log('fnbInfo: ', fnbData);
 
   useEffect(() => {
     const fetchData = async () => {

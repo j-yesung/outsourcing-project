@@ -1,19 +1,19 @@
-import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import {
-  addDoc,
-  collection,
-  deleteDoc,
   doc,
-  getDocs,
-  getFirestore,
-  orderBy,
-  query,
+  addDoc,
   setDoc,
+  getDocs,
   updateDoc,
-  where
+  deleteDoc,
+  collection,
+  getFirestore,
+  query,
+  orderBy
 } from 'firebase/firestore';
-import userIcon from '../../assets/user.svg';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
+import userIcon from '../assets/user.svg';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -27,9 +27,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const fnbRef = collection(db, 'fnb');
-const commentsRef = collection(db, 'comments');
 const postsRef = collection(db, 'posts');
+const commentsRef = collection(db, 'comments');
 
 /**
  * 회원가입
@@ -57,12 +58,29 @@ export const registerUser = async (email, password, nickname) => {
 export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential.user;
+    const userInfo = {
+      accessToken: userCredential.user.accessToken,
+      nickname: userCredential.user.displayName,
+      email: userCredential.user.email,
+      image: userCredential.user.photoURL,
+      uid: userCredential.uid
+    };
+    return userInfo;
   } catch (error) {
     console.log('error: ', error);
     throw error;
   }
 };
+
+/**
+ * @returns 현재 유저 정보 가져오기
+ */
+export const getUser = () => auth.currentUser;
+
+/**
+ * @returns 로그아웃
+ */
+export const logoutUser = () => auth.signOut();
 
 /**
  * fnb 읽어오기
@@ -141,8 +159,7 @@ export const getComments = async () => {
  * @param {*} data 작성 댓글
  * @param {*} docId fnb 문서 ID
  */
-export const addToCommentDatabase = async (data) => {
-  console.log('data: ', data);
+export const addComment = async (data) => {
   try {
     await addDoc(commentsRef, data);
   } catch (error) {
@@ -156,7 +173,7 @@ export const addToCommentDatabase = async (data) => {
  * @param {*} id
  * @param {*} updateData
  */
-export const updatingComment = async (id, updateData) => {
+export const updateComment = async ({ id, updateData }) => {
   console.log('id, updateData: ', id, updateData);
   try {
     const docRef = doc(db, 'comments', id);
@@ -193,19 +210,45 @@ export const addPosts = async (data) => {
 };
 
 /**
- * posts 읽어오기
- * @returns
+ * @returns posts 읽어오기
  */
 export const getPosts = async () => {
   try {
-    const querySnapshot = await getDocs(postsRef);
+    // 날짜순으로 정렬하여 불러오기(내림차순)
+    const q = query(postsRef, orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
     const postsList = [];
     querySnapshot.forEach((doc) => {
-      postsList.push(doc.data());
+      // id 추가하여 가져오기
+      postsList.push({ ...doc.data(), id: doc.id });
     });
     return postsList;
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;
   }
+};
+
+// posts 삭제하기
+export const deletePosts = async (id) => {
+  try {
+    await deleteDoc(doc(db, 'posts', id));
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 파일 업로드
+ * @param {*} file 업로드한 파일 참조 값
+ * @returns Storage에 저장된 파일 URL
+ */
+export const fileUpload = async (userInfo, file) => {
+  const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
+  await uploadBytes(imageRef, file);
+  const downloadURL = await getDownloadURL(imageRef);
+  // 유저 정보 업데이트
+  updateProfile(userInfo, { image: downloadURL });
+  return downloadURL;
 };

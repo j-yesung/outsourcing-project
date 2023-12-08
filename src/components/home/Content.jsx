@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
 import { getPosts } from 'api/firebase/firebase';
+
+import { getPosts } from 'api/firebase';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { getPost, editPost, deletePost } from 'store/modules/postsSlice';
 import { getFormattedDate } from 'utils/date';
