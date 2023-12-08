@@ -1,10 +1,10 @@
 import useKakaoMap from 'hooks/useKakaoMap';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import * as S from '../../styles/pages/Detail.styled';
 import { addToMapListDatabase } from 'api/firebase';
 import { ExtractCategoryNames } from 'utils/regex';
 import Comment from 'components/user/Comment';
+import * as S from '../../styles/pages/Detail.styled';
 
 const MapList = () => {
   const params = useParams();
@@ -24,14 +24,14 @@ const MapList = () => {
       addToMapListDatabase(originData, ExtractCategoryNames(originData));
       // console.log('추가..');
     }
-  }, []);
+  }, [originData, params.id]);
 
   return (
     <>
       {originData !== undefined ? (
         <>
           <S.TopWrapper>
-            <div ref={mapRef} style={{ width: '300px', height: '200px', borderRadius: '20px' }} />
+            <div ref={mapRef} style={{ width: '600px', height: '200px', borderRadius: '20px' }} />
             <S.DetailWrapper>
               <S.PlaceName>{originData.place_name}</S.PlaceName>
               <S.PlaceInfo>

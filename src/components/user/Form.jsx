@@ -29,7 +29,6 @@ const Form = () => {
     e.preventDefault();
     try {
       await registerUser(email, password, nickname);
-      console.log('result', registerUser);
       navigate('/login');
     } catch (error) {
       console.log(error.message);
@@ -39,18 +38,11 @@ const Form = () => {
   // 로그인 함수
   const loginHandler = async (e) => {
     e.preventDefault();
-    const response = await loginUser(email, password);
-    const userInfo = {
-      accessToken: response.accessToken,
-      nickname: response.displayName,
-      email: response.email,
-      image: response.photoURL
-    };
-    localStorage.setItem('userInfo', JSON.stringify(userInfo));
-    dispatch(setUserInfo(userInfo));
-    toast.success(`${response.displayName}님 반가워요!`);
-    if (response.accessToken) navigate('/');
     try {
+      const userInfo = await loginUser(email, password);
+      dispatch(setUserInfo(userInfo));
+      toast.success(`${userInfo.displayName}님 반가워요!`);
+      if (userInfo.accessToken) navigate('/');
     } catch (error) {
       console.error(error.message);
     }

@@ -3,7 +3,7 @@ const { default: styled } = require('styled-components');
 export const TopWrapper = styled.div`
   display: inline-flex;
   border-radius: 10px;
-  margin: 30px 0 0 700px;
+  margin: 30px 0 0 530px;
 `;
 export const DetailWrapper = styled.div`
   display: flex;
