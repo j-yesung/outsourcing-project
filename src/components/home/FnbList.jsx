@@ -1,32 +1,46 @@
-import { getMapList, getSpecificMapList } from 'api/firebase/firebase';
-import Map from 'components/kakaoMap/Map';
+import { getMapList } from 'api/firebase/firebase';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFnbInfo } from 'store/modules/mapInfoSlice';
+import * as S from '../../styles/pages/Home.styled';
+import { useNavigate } from 'react-router-dom';
 
-// TODO: 화면 전체 다 뿌려 주기
 const FnbList = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // const mapInfo = useSelector((state) => state.mapInfoSlice.mapInfo);
   // console.log('kakaoMapInfo: ', mapInfo);
+  const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
+  console.log('fnbInfo: ', fnbData);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getMapList();
-        console.log('data: ', data);
-        // dispatch 추가하기
-        // dispatch(getMapList())
-        const res = await getSpecificMapList();
-        console.log('res: ', res);
+        dispatch(setFnbInfo(data));
+        // TODO: 카테고리 누를 때에 이름 전달
+        // const res = await getSpecificMapList(fnbData.category_name);
+        // // dispatch 추가하기
+        // console.log('파이어베이스에 담긴 필터된 리스트: ', res);
       } catch (error) {
         console.error('공습 경보 😵', error);
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
+
   return (
     <>
-      <Map />
+      {fnbData && (
+        <S.FnbWrapper>
+          {fnbData.map((item, index) => (
+            <S.FnbList key={index} onClick={() => navigate(`/detail/${item.id}`)}>
+              {/* 이미지가 들어가야 합니다. */}
+              <p>{item.place_name}</p>
+            </S.FnbList>
+          ))}
+        </S.FnbWrapper>
+      )}
     </>
   );
 };

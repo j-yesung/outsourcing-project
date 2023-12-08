@@ -1,6 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { collection, doc, getDocs, getFirestore, query, setDoc, where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+  where
+} from 'firebase/firestore';
 import userIcon from '../../assets/user.svg';
 
 const firebaseConfig = {
@@ -15,7 +27,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const collectionRef = collection(db, 'fnb');
+const fnbRef = collection(db, 'fnb');
+const commentsRef = collection(db, 'comments');
+const postsRef = collection(db, 'posts');
 
 /**
  * 회원가입
@@ -56,11 +70,12 @@ export const loginUser = async (email, password) => {
  */
 export const getMapList = async () => {
   try {
-    const querySnapshot = await getDocs(collectionRef);
+    const querySnapshot = await getDocs(fnbRef);
     const mapList = [];
     querySnapshot.forEach((doc) => {
       mapList.push(doc.data());
     });
+    localStorage.setItem('ALL_DATA', JSON.stringify(mapList));
     return mapList;
   } catch (error) {
     console.error('공습 경보 😵', error);
@@ -68,28 +83,21 @@ export const getMapList = async () => {
   }
 };
 
-export const getSpecificMapList = async () => {
+export const getSpecificMapList = async (name) => {
   try {
-    const querySnapshot = await getDocs(collectionRef);
-    const specificValue = '음식점'; // TODO: 동적으로 변경 (변수 지정 -> 카테고리를 클릭했을 때에 value)
+    const querySnapshot = await getDocs(fnbRef);
+    const specificValue = name; // TODO: 동적으로 변경 (변수 지정 -> 카테고리를 클릭했을 때에 value)
     const documentsWithSpecificValue = [];
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      const specificFieldName = 'category_group_name';
-
       // 특정 필드 값과 일치하는 문서
-      if (data[specificFieldName] === specificValue) {
-        documentsWithSpecificValue.push({
-          id: doc.id,
-          data: data
-        });
-      }
+      if (data['category_group_name'] === specificValue) documentsWithSpecificValue.push({ id: doc.id, data: data });
     });
 
     return documentsWithSpecificValue;
   } catch (error) {
-    console.error('에러 😵', error);
+    console.error('공습 경보 😵', error);
   }
 };
 
@@ -99,10 +107,103 @@ export const getSpecificMapList = async () => {
  * @param {*} data 15개의 장소 (장소는 검색 키워드를 통해 나온 곳들)
  * @param {*} DocId 직접 지정한 문서 ID
  */
-export const addToMapListDatabase = async (data, DocId) => {
+export const addToMapListDatabase = async (data, docId) => {
   try {
-    const docRef = doc(db, 'fnb', DocId);
+    const docRef = doc(db, 'fnb', docId);
     await setDoc(docRef, data);
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 댓글 조회
+ * @returns
+ */
+export const getComments = async () => {
+  try {
+    const querySnapshot = await getDocs(commentsRef);
+    const allComments = [];
+
+    querySnapshot.forEach((doc) => {
+      allComments.push({ ...doc.data(), id: doc.data().id, uid: doc.id });
+    });
+    return allComments;
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 댓글 작성
+ * @param {*} data 작성 댓글
+ * @param {*} docId fnb 문서 ID
+ */
+export const addToCommentDatabase = async (data) => {
+  console.log('data: ', data);
+  try {
+    await addDoc(commentsRef, data);
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 댓글 수정
+ * @param {*} id
+ * @param {*} updateData
+ */
+export const updatingComment = async (id, updateData) => {
+  console.log('id, updateData: ', id, updateData);
+  try {
+    const docRef = doc(db, 'comments', id);
+    await updateDoc(docRef, updateData);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+/**
+ * 댓글 삭제
+ * @param {} id
+ */
+export const deleteComment = async (id) => {
+  try {
+    await deleteDoc(doc(db, 'comments', id));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+/**
+ * posts 추가하기
+ * write에서 가져온 데이터를 Firebase에 추가하기
+ * @param {*} data
+ */
+export const addPosts = async (data) => {
+  try {
+    await addDoc(postsRef, data);
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * posts 읽어오기
+ * @returns
+ */
+export const getPosts = async () => {
+  try {
+    const querySnapshot = await getDocs(postsRef);
+    const postsList = [];
+    querySnapshot.forEach((doc) => {
+      postsList.push(doc.data());
+    });
+    return postsList;
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;
