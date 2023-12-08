@@ -1,4 +1,4 @@
-import { getMapList } from 'api/firebase/firebase';
+import { getMapList } from 'api/firebase';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFnbInfo } from 'store/modules/mapInfoSlice';

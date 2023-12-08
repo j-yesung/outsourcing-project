@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPosts } from 'api/firebase/firebase';
+import { getPosts } from 'api/firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPost } from 'store/modules/postsSlice';
 
