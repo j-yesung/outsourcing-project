@@ -1,5 +1,16 @@
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, addDoc, setDoc, getDocs, updateDoc, deleteDoc, collection, getFirestore } from 'firebase/firestore';
+import {
+  doc,
+  addDoc,
+  setDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  collection,
+  getFirestore,
+  query,
+  orderBy
+} from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { initializeApp } from 'firebase/app';
 import userIcon from '../assets/user.svg';
@@ -51,7 +62,8 @@ export const loginUser = async (email, password) => {
       accessToken: userCredential.user.accessToken,
       nickname: userCredential.user.displayName,
       email: userCredential.user.email,
-      image: userCredential.user.photoURL
+      image: userCredential.user.photoURL,
+      uid: userCredential.uid
     };
     return userInfo;
   } catch (error) {
@@ -148,7 +160,6 @@ export const getComments = async () => {
  * @param {*} docId fnb 문서 ID
  */
 export const addComment = async (data) => {
-  console.log('data: ', data);
   try {
     await addDoc(commentsRef, data);
   } catch (error) {
@@ -199,17 +210,29 @@ export const addPosts = async (data) => {
 };
 
 /**
- * posts 읽어오기
- * @returns
+ * @returns posts 읽어오기
  */
 export const getPosts = async () => {
   try {
-    const querySnapshot = await getDocs(postsRef);
+    // 날짜순으로 정렬하여 불러오기(내림차순)
+    const q = query(postsRef, orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
     const postsList = [];
     querySnapshot.forEach((doc) => {
-      postsList.push(doc.data());
+      // id 추가하여 가져오기
+      postsList.push({ ...doc.data(), id: doc.id });
     });
     return postsList;
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+// posts 삭제하기
+export const deletePosts = async (id) => {
+  try {
+    await deleteDoc(doc(db, 'posts', id));
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;
