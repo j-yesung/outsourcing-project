@@ -32,3 +32,12 @@ export const PostBtn = styled.div`
 export const PostContent = styled.div`
   margin: 50px 0;
 `;
+
+export const TempDiv = styled.div`
+  border: 2px solid pink;
+  margin: 5px;
+  padding: 5px;
+  line-height: 1.2;
+  font-size: 12px;
+  border: '1px solid pink';
+`;
