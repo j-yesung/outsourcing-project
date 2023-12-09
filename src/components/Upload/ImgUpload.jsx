@@ -1,15 +1,13 @@
 import React, { useRef, useState } from 'react';
 import userIcon from '../../assets/user.svg';
-import { fileUpload, getUser } from 'api/firebase';
-import { useDispatch } from 'react-redux';
-import { setUserInfo } from 'store/modules/authSlice';
+import { fileUpload } from 'api/firebase';
 import { ToastContainer, toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ImgUpload = () => {
   const imgRef = useRef();
-  const dispatch = useDispatch();
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const userInfo = useSelector((state) => state.authSlice.userInfo);
   const [img, setImg] = useState(userInfo.image || userIcon);
   const [selectFile, setSelectFile] = useState(null);
 
@@ -32,22 +30,6 @@ export const ImgUpload = () => {
     if (!selectFile) return toast.error('이미지를 선택해 주세요.');
     const downloadURL = await fileUpload(selectFile);
     localStorage.setItem('userInfo', JSON.stringify({ ...userInfo, image: downloadURL }));
-  };
-
-  const onClearImage = async () => {
-    // if (window.confirm('이미지를 삭제하시겠습니까?')) {
-    //   setDownloadURL(userIcon);
-    //   inputRef.current.value = null;
-    //   const imageRef = ref(storage, downloadURL);
-    //   try {
-    //     await deleteObject(imageRef);
-    //     updateProfile(authUser, { photoURL: userIcon })
-    //       .then(() => console.log('프로필 이미지가 제거되었습니다.'))
-    //       .catch(error => console.error('프로필 이미지를 제거 실패했습니다.', error));
-    //   } catch (error) {
-    //     console.error('공습 경보!', error);
-    //   }
-    // }
   };
 
   return (
