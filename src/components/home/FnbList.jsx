@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router-dom';
 const FnbList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const mapInfo = useSelector((state) => state.mapInfoSlice.mapInfo);
-  // console.log('kakaoMapInfo: ', mapInfo);
   const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
 
   useEffect(() => {
