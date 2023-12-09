@@ -219,6 +219,16 @@ export const getPosts = async () => {
   }
 };
 
+// posts 업데이트
+export const updatePosts = async (id, title, contents) => {
+  try {
+    await updateDoc(doc(db, 'posts', id), { title: title, contents: contents });
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
 // posts 삭제하기
 export const deletePosts = async (id) => {
   try {
