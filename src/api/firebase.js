@@ -237,11 +237,26 @@ export const deletePosts = async (id) => {
 export const fileUpload = async (file) => {
   try {
     const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
+    await uploadBytes(imageRef, file);
     const downloadURL = await getDownloadURL(imageRef);
-    uploadBytes(imageRef, file);
 
     await updateProfile(auth.currentUser, { photoURL: downloadURL });
     return downloadURL;
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 닉네임 변경 (유저 정보 업데이트)
+ * @param {*} nickname
+ * @returns
+ */
+export const nicknameUpdate = async (nickname) => {
+  console.log('nickname: ', nickname);
+  try {
+    await updateProfile(auth.currentUser, { displayName: nickname });
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;

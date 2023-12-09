@@ -2,11 +2,15 @@ import React, { useRef, useState } from 'react';
 import userIcon from '../../assets/user.svg';
 import { fileUpload } from 'api/firebase';
 import { ToastContainer, toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
+import NickName from 'components/user/NickName';
+import * as S from '../../styles/pages/Profile.styled';
+import { setUserInfo } from 'store/modules/authSlice';
 
 export const ImgUpload = () => {
   const imgRef = useRef();
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.authSlice.userInfo);
   const [img, setImg] = useState(userInfo.image || userIcon);
   const [selectFile, setSelectFile] = useState(null);
@@ -26,19 +30,25 @@ export const ImgUpload = () => {
 
   // 업로드
   const uploadHandler = async () => {
-    toast.success('이미지 업데이트 완료');
     if (!selectFile) return toast.error('이미지를 선택해 주세요.');
+    toast.success('이미지 업데이트 완료');
     const downloadURL = await fileUpload(selectFile);
-    localStorage.setItem('userInfo', JSON.stringify({ ...userInfo, image: downloadURL }));
+    dispatch(setUserInfo({ ...userInfo, image: downloadURL }));
   };
 
   return (
     <>
-      <img src={img} width={50} alt="사진" />
-      <input type="file" ref={imgRef} onChange={handleImageUpload} />
-      <button onClick={uploadHandler}>업로드</button>
+      <S.Wrapper>
+        <S.Image src={img} alt="사진" />
+        <S.ButtonBox>
+          <NickName /> {/**  */}
+          <input type="file" ref={imgRef} onChange={handleImageUpload} style={{ display: 'none' }} />
+          <S.UploadButton onClick={() => imgRef.current.click()}>파일 찾기</S.UploadButton>
+          <S.UploadButton onClick={uploadHandler}>업로드</S.UploadButton>
+        </S.ButtonBox>
+        {/* <input ref={imgRef} onChange={handleImageUpload} type="file" style={{ display: 'none' }} /> */}
+      </S.Wrapper>
       <ToastContainer autoClose={1000} />
-      {/* <input ref={imgRef} onChange={handleImageUpload} type="file" style={{ display: 'none' }} /> */}
     </>
   );
 };
