@@ -1,17 +1,22 @@
 import { getPost, editPost, deletePost } from 'store/modules/postsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { deletePosts, getPosts } from '../../api/firebase';
+import { deletePosts, getPosts, getUser } from '../../api/firebase';
 import { getFormattedDate } from 'utils/date';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 function Content() {
   // 전역상태에 있는 post 불러오기
   const posts = useSelector((state) => state.postsSlice.posts);
   const auth = useSelector((state) => state.authSlice.userInfo);
+
+  // console.log(getUser().uid);
+
   // console.log(posts);
   // console.log(auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -55,7 +60,7 @@ function Content() {
       {/* optional chaining */}
       {posts?.map((item) => {
         return (
-          <TempDiv style={{ border: '1px solid pink' }}>
+          <TempDiv onClick={() => navigate(`/post/${item.id}`)} style={{ border: '1px solid pink' }}>
             <div>제목 : {item.title}</div>
             <span>날짜 : {getFormattedDate(item.createdAt)}</span>
             <div>내용 : {item.contents}</div>
@@ -67,7 +72,7 @@ function Content() {
       <div> ⬇️ 내 게시글만 모아보기 ⬇️</div>
       {/* 게시글의 uid와 현재 로그인한 계정의 uid비교하여 필터링 */}
       {posts
-        ?.filter((user) => user.uid == auth.uid)
+        ?.filter((user) => user.uid == getUser().uid)
         .map((item) => {
           return (
             <TempDiv style={{ border: '1px solid pink' }}>
