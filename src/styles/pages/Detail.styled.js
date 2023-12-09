@@ -1,4 +1,4 @@
-const { default: styled } = require('styled-components');
+import styled from 'styled-components';
 
 export const TopWrapper = styled.div`
   display: inline-flex;

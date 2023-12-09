@@ -34,38 +34,12 @@ const commentsRef = collection(db, 'comments');
 
 /**
  * 회원가입
- * @param {*} email
- * @param {*} password
- * @param {*} nickname
- * @returns
+ * @param {*} data 이메일, 비밀번호
  */
-export const registerUser = async (email, password, nickname) => {
+export const registerUser = async (data) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(userCredential.user, { displayName: nickname, photoURL: userIcon });
-    return userCredential.user;
-  } catch (error) {
-    console.log('error: ', error);
-    throw error;
-  }
-};
-/**
- * 로그인
- * @param {*} email
- * @param {*} password
- * @returns
- */
-export const loginUser = async (email, password) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const userInfo = {
-      accessToken: userCredential.user.accessToken,
-      nickname: userCredential.user.displayName,
-      email: userCredential.user.email,
-      image: userCredential.user.photoURL,
-      uid: userCredential.uid
-    };
-    return userInfo;
+    const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+    await updateProfile(userCredential.user, { displayName: data.nickname, photoURL: userIcon });
   } catch (error) {
     console.log('error: ', error);
     throw error;
@@ -73,14 +47,31 @@ export const loginUser = async (email, password) => {
 };
 
 /**
- * @returns 현재 유저 정보 가져오기
+ * 로그인
+ * @param {*} data 이메일, 비밀번호
  */
-export const getUser = () => auth.currentUser;
+export const loginUser = async (data) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+    const userInfo = {
+      nickname: userCredential.user.displayName,
+      email: userCredential.user.email,
+      image: userCredential.user.photoURL
+    };
+    return userInfo; // 로그인 성공 시, 유저 정보 반환합니다.
+  } catch (error) {
+    console.log('error: ', error);
+    throw error;
+  }
+};
 
 /**
  * @returns 로그아웃
  */
-export const logoutUser = () => auth.signOut();
+export const logOutUser = () => {
+  auth.signOut();
+  localStorage.removeItem('userInfo');
+};
 
 /**
  * fnb 읽어오기
@@ -93,7 +84,6 @@ export const getMapList = async () => {
     querySnapshot.forEach((doc) => {
       mapList.push(doc.data());
     });
-    localStorage.setItem('ALL_DATA', JSON.stringify(mapList));
     return mapList;
   } catch (error) {
     console.error('공습 경보 😵', error);
@@ -141,7 +131,7 @@ export const addToMapListDatabase = async (data, docId) => {
  */
 export const getComments = async () => {
   try {
-    const querySnapshot = await getDocs(commentsRef);
+    const querySnapshot = await getDocs(query(commentsRef, orderBy('date', 'desc')));
     const allComments = [];
 
     querySnapshot.forEach((doc) => {
@@ -244,11 +234,31 @@ export const deletePosts = async (id) => {
  * @param {*} file 업로드한 파일 참조 값
  * @returns Storage에 저장된 파일 URL
  */
-export const fileUpload = async (userInfo, file) => {
-  const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
-  await uploadBytes(imageRef, file);
-  const downloadURL = await getDownloadURL(imageRef);
-  // 유저 정보 업데이트
-  updateProfile(userInfo, { image: downloadURL });
-  return downloadURL;
+export const fileUpload = async (file) => {
+  try {
+    const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
+    await uploadBytes(imageRef, file);
+    const downloadURL = await getDownloadURL(imageRef);
+
+    await updateProfile(auth.currentUser, { photoURL: downloadURL });
+    return downloadURL;
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 닉네임 변경 (유저 정보 업데이트)
+ * @param {*} nickname
+ * @returns
+ */
+export const nicknameUpdate = async (nickname) => {
+  console.log('nickname: ', nickname);
+  try {
+    await updateProfile(auth.currentUser, { displayName: nickname });
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
 };

@@ -2,13 +2,13 @@ import React, { useRef, useState } from 'react';
 import { useComments } from 'hooks/useComments';
 import { getFormattedDate } from 'utils/date';
 import * as S from '../../styles/user/Comment.styled';
+import { useSelector } from 'react-redux';
 
 const Comment = (props) => {
-  const commentRef = useRef();
   const editCommentRef = useRef();
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const commentRef = useRef();
   const [isEditing, setEditing] = useState({});
-  JSON.parse(localStorage.getItem('ALL_DATA'));
+  const userInfo = useSelector((state) => state.authSlice.userInfo);
 
   const { comments, isLoading, addComment, updateComment, deleteComment } = useComments();
   const commentsCount = comments ? comments.filter((v) => v.id === props.id) : [];

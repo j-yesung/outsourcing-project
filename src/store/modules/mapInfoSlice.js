@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  mapInfo: null,
-  fnbInfo: []
+  mapInfo: JSON.parse(localStorage.getItem('mapInfo')) || null,
+  fnbInfo: JSON.parse(localStorage.getItem('fnbInfo')) || null
 };
 
 export const mapInfoSlice = createSlice({
@@ -10,9 +10,11 @@ export const mapInfoSlice = createSlice({
   initialState,
   reducers: {
     setMapInfo: (state, action) => {
+      localStorage.setItem('mapInfo', JSON.stringify(action.payload));
       state.mapInfo = action.payload;
     },
     setFnbInfo: (state, action) => {
+      localStorage.setItem('fnbInfo', JSON.stringify(action.payload));
       state.fnbInfo = action.payload;
     }
   }

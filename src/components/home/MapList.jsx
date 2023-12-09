@@ -5,13 +5,15 @@ import { addToMapListDatabase } from 'api/firebase';
 import { ExtractCategoryNames } from 'utils/regex';
 import Comment from 'components/user/Comment';
 import * as S from '../../styles/pages/Detail.styled';
+import { useSelector } from 'react-redux';
 
 const MapList = () => {
   const params = useParams();
   const mapRef = useRef(null);
-
-  const searchData = JSON.parse(localStorage.getItem('mapInfo')).find((data) => data.id === params.id);
-  const detailData = JSON.parse(localStorage.getItem('ALL_DATA')).find((data) => data.id === params.id);
+  const serchRef = useSelector((state) => state.mapInfoSlice.mapInfo);
+  const detailRef = useSelector((state) => state.mapInfoSlice.fnbInfo);
+  const searchData = serchRef.find((data) => data.id === params.id);
+  const detailData = detailRef.find((data) => data.id === params.id);
   const originData = searchData === undefined ? detailData : searchData;
 
   useKakaoMap(originData, mapRef);
