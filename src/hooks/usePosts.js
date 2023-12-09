@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deletePosts, getPosts, updatePosts } from 'api/firebase';
+import { addPosts, deletePosts, getPosts, updatePosts } from 'api/firebase';
 import { useNavigate } from 'react-router-dom';
 
 const QUERY_KEY = 'posts';
@@ -13,7 +13,14 @@ export const usePosts = () => {
     queryKey: [QUERY_KEY],
     queryFn: getPosts
   });
-
+  // 추가
+  const addPostsMutation = useMutation({
+    mutationFn: addPosts,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+      navigate('/post');
+    }
+  });
   // 수정
   const updatePostsMutation = useMutation({
     mutationFn: updatePosts,
@@ -32,6 +39,7 @@ export const usePosts = () => {
 
   return {
     posts,
+    __addPosts: addPostsMutation.mutate,
     __updatePosts: updatePostsMutation.mutate,
     __deletePosts: deletePostsMutation.mutate
   };
