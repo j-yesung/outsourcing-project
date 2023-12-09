@@ -56,7 +56,8 @@ export const loginUser = async (data) => {
     const userInfo = {
       nickname: userCredential.user.displayName,
       email: userCredential.user.email,
-      image: userCredential.user.photoURL
+      image: userCredential.user.photoURL,
+      uid: userCredential.user.uid
     };
     return userInfo; // 로그인 성공 시, 유저 정보 반환합니다.
   } catch (error) {
@@ -164,7 +165,6 @@ export const addComment = async (data) => {
  * @param {*} updateData
  */
 export const updateComment = async ({ id, updateData }) => {
-  console.log('id, updateData: ', id, updateData);
   try {
     const docRef = doc(db, 'comments', id);
     await updateDoc(docRef, updateData);
@@ -220,9 +220,9 @@ export const getPosts = async () => {
 };
 
 // posts 업데이트
-export const updatePosts = async (id, title, contents) => {
+export const updatePosts = async ({ id, updates }) => {
   try {
-    await updateDoc(doc(db, 'posts', id), { title: title, contents: contents });
+    await updateDoc(doc(db, 'posts', id), updates);
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;
@@ -264,7 +264,6 @@ export const fileUpload = async (file) => {
  * @returns
  */
 export const nicknameUpdate = async (nickname) => {
-  console.log('nickname: ', nickname);
   try {
     await updateProfile(auth.currentUser, { displayName: nickname });
   } catch (error) {

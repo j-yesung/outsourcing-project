@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import * as S from '../../styles/posts/PostContent.styled';
+import { usePosts } from 'hooks/usePosts';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { getFormattedDate } from 'utils/date';
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-import 'tui-color-picker/dist/tui-color-picker.css';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import '@toast-ui/editor/dist/toastui-editor-viewer';
-import { Viewer } from '@toast-ui/react-editor';
 import { Editor } from '@toast-ui/react-editor';
-import { deletePosts, getUser, updatePosts } from 'api/firebase';
-import { deletePost, editPost } from 'store/modules/postsSlice';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import 'tui-color-picker/dist/tui-color-picker.css';
+import * as S from '../../styles/posts/PostContent.styled';
+import React, { useEffect, useRef, useState } from 'react';
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
 const colorSyntaxOptions = {
   preset: [
@@ -36,55 +33,43 @@ const colorSyntaxOptions = {
 
 // 특정 게시글 보여주기
 const PostDetail = () => {
-  const posts = useSelector((state) => state.postsSlice.posts);
-  console.log(posts);
   const { id } = useParams();
-  const { title, contents, createdAt, uid } = posts.find((item) => item.id === id);
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [titleEdit, setTitleEdit] = useState(title);
-
   const editorRef = useRef();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const editTitleRef = useRef();
+  const [isEditing, setIsEditing] = useState(false);
+  const { posts, __updatePosts, __deletePosts } = usePosts();
+  const { title, contents, createdAt, uid } = posts ? posts.find((item) => item.id === id) : [];
+  const userInfo = useSelector((state) => state.authSlice.userInfo);
 
   useEffect(() => {
-    // editorRef.current?.getInstance().setHTML(contents);
     editorRef.current?.getInstance().setMarkdown(contents);
-  }, []);
-  useEffect(() => {
-    // editorRef.current?.getInstance().setHTML(contents);
-    editorRef.current?.getInstance().setMarkdown(contents);
-  }, [isEditing]);
+  }, [isEditing, contents]);
 
-  // 삭제 버튼 누르면 알림창 뜨고 삭제
-  const deleteHandler = async (id) => {
-    const newPosts = posts.filter((target) => target.id != id);
-    alert('삭제하시겠습니까?');
-    // firebase삭제
-    await deletePosts(id);
-    // postsSlice 전역 삭제
-    dispatch(deletePost(newPosts));
-    navigate(`/post`);
+  const deleteHandler = (id) => {
+    if (window.confirm('삭제 하시겠습니까?')) {
+      __deletePosts(id);
+      alert('삭제되었습니다.');
+    }
   };
+
   const updateHandler = () => {
     const contentMark = editorRef?.current?.getInstance().getMarkdown();
-    updatePosts(id, titleEdit, contentMark);
-    dispatch(editPost(id, titleEdit, contentMark));
+    const updates = { title: editTitleRef.current.value, contents: contentMark };
+    __updatePosts({ id, updates });
     setIsEditing(false);
   };
+
   return (
     <S.Container>
-      {/* Header와 Body 통째로 삼항연산자 */}
       {isEditing ? (
         <>
           <S.PostHeader>
-            <S.PostTitleEdit value={titleEdit} onChange={(e) => setTitleEdit(e.target.value)} />
+            <S.PostTitleEdit ref={editTitleRef} defaultValue={title} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <S.PostDate>{getFormattedDate(createdAt)}</S.PostDate>
               <S.PostBtn>
                 <button onClick={() => setIsEditing(false)}>취소</button>
-                <button onClick={() => updateHandler()}>완료</button>
+                <button onClick={updateHandler}>완료</button>
               </S.PostBtn>
             </div>
           </S.PostHeader>
@@ -107,6 +92,7 @@ const PostDetail = () => {
               plugins={[[colorSyntax, colorSyntaxOptions]]}
               usageStatistics={false}
               ref={editorRef}
+              defaultValue={contents}
             />
           </S.PostContent>
         </>
@@ -116,7 +102,7 @@ const PostDetail = () => {
             <S.PostTitle>{title}</S.PostTitle>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <S.PostDate>{getFormattedDate(createdAt)}</S.PostDate>
-              {getUser().uid === uid && (
+              {userInfo.uid === uid && (
                 <S.PostBtn>
                   <button onClick={() => setIsEditing(true)}>수정</button>
                   <button onClick={() => deleteHandler(id)}>삭제</button>
@@ -125,7 +111,7 @@ const PostDetail = () => {
             </div>
           </S.PostHeader>
           <S.PostContent>
-            <Viewer initialValue={contents} />
+            <p>{contents}</p>
           </S.PostContent>
         </>
       )}
