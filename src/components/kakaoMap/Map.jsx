@@ -105,12 +105,8 @@ const Map = () => {
 
       setMarkers(newMarkers);
       map.setBounds(bounds);
-      // state
       setPlaces(newPlaces);
       setSearchResults(newPlaces);
-      // localStorage
-      localStorage.setItem('mapInfo', JSON.stringify(newPlaces));
-      // redux
       dispatch(setMapInfo(newPlaces));
     }
   };
@@ -156,8 +152,6 @@ const Map = () => {
       );
     }
   };
-
-  console.log('>>>> ', searchResults);
 
   return (
     <>
