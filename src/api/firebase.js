@@ -234,11 +234,19 @@ export const deletePosts = async (id) => {
  * @param {*} file 업로드한 파일 참조 값
  * @returns Storage에 저장된 파일 URL
  */
-export const fileUpload = async (userInfo, file) => {
-  const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
-  await uploadBytes(imageRef, file);
-  const downloadURL = await getDownloadURL(imageRef);
-  // 유저 정보 업데이트
-  updateProfile(userInfo, { image: downloadURL });
-  return downloadURL;
+export const fileUpload = async (file) => {
+  try {
+    const imageRef = ref(storage, `${auth.currentUser.uid}/${file.name}`);
+    const downloadURL = getDownloadURL(imageRef);
+    uploadBytes(imageRef, file);
+
+    // _ 이거는 특정 값을 무시하는 것으로 uploadTask를 무시한다는 것입니다.
+    // const [_, downloadURL] = await Promise.all([uploadTask, urlTask]);
+
+    await updateProfile(auth.currentUser, { photoURL: downloadURL });
+    return downloadURL;
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
 };
