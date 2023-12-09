@@ -131,7 +131,7 @@ export const addToMapListDatabase = async (data, docId) => {
  */
 export const getComments = async () => {
   try {
-    const querySnapshot = await getDocs(commentsRef);
+    const querySnapshot = await getDocs(query(commentsRef, orderBy('date', 'desc')));
     const allComments = [];
 
     querySnapshot.forEach((doc) => {
