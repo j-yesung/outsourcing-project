@@ -124,6 +124,7 @@ const Map = () => {
 
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
+      // console.log('로딩 창 오픈');
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -146,10 +147,12 @@ const Map = () => {
           setCurrentInfowindow(infowindow);
 
           infowindow.open(map, currentLocationMarker);
+          // console.log('로딩 창 닫기');
         },
         (error) => {
           console.error('현재위치 찾기 오류발생! 다른브라우저를 사용하세요!', error);
-        }
+        },
+        { enableHighAccuracy: false, timeout: 5000, maximumAge: Infinity }
       );
     }
   };
