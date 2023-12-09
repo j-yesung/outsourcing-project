@@ -41,8 +41,12 @@ const Write = () => {
   const onClickHandler = async () => {
     try {
       // 토스트에디터 내용 입력 부분 변수로 지정하기
-      const editorIns = editorRef?.current?.getInstance();
-      const contentMark = editorIns.getMarkdown();
+      const contentMark = editorRef?.current?.getInstance().getMarkdown();
+      // 제목과 내용 유효성 검사
+      if (contentMark == '' || titleRef.current.value == '') {
+        alert('제목과 내용을 입력하세요');
+        return;
+      }
       // firebase에 추가할 post 객체로 선언
       const newPost = {
         title: titleRef.current.value,
@@ -54,6 +58,7 @@ const Write = () => {
       // console.log(newPost);
       // newPost객체를 addPosts를 이용하기 파이어베이스에 추가하기
       await addPosts(newPost);
+      titleRef.current.value = '';
     } catch (error) {
       console.log('error -> ', error);
     }
@@ -94,7 +99,6 @@ const Write = () => {
         />
         <button onClick={onClickHandler}>Click</button>
       </Box>
-      <Content />
     </div>
   );
 };
