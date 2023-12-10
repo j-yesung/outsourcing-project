@@ -1,3 +1,4 @@
+import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { usePosts } from 'hooks/usePosts';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -9,9 +10,8 @@ import * as S from '../../styles/posts/PostContent.styled';
 import * as M from '../../styles/modal/Lodaing.styled';
 import React, { useEffect, useRef, useState } from 'react';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { useLikes } from 'hooks/useLikes';
-import likeHeart from '../../assets/pngwing.com.png';
+import likeHeart from '../../assets/pngegg.png';
 
 const colorSyntaxOptions = {
   preset: [
@@ -41,6 +41,7 @@ const PostDetail = () => {
   const editTitleRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
   const { likes, increaseLike } = useLikes(id);
+  const [liked, setLiked] = useState(false);
   console.log('likes: ', likes);
   const { posts, postsLoading, __updatePosts, __deletePosts } = usePosts();
   const { title, contents, createdAt, uid } = posts ? posts.find((item) => item.id === id) : [];
@@ -62,6 +63,11 @@ const PostDetail = () => {
     const updates = { title: editTitleRef.current.value, contents: contentMark };
     __updatePosts({ id, updates });
     setIsEditing(false);
+  };
+
+  const likeHandler = () => {
+    increaseLike({ postId: id, uid });
+    setLiked(!liked);
   };
 
   if (postsLoading) {
@@ -113,16 +119,25 @@ const PostDetail = () => {
               <S.PostDate>{getFormattedDate(createdAt)}</S.PostDate>
               {userInfo.uid === uid && (
                 <S.PostBtn>
-                  <button onClick={() => increaseLike({ postId: id, uid })}>
-                    <img src={likeHeart} width={30} alt="사진" />
-                  </button>
-                  <button onClick={() => setIsEditing(true)}>수정</button>
-                  <button onClick={() => deleteHandler(id)}>삭제</button>
-                  <span>{likes}</span>
+                  <S.UpdateButton $color="#e31c5f" onClick={() => setIsEditing(true)}>
+                    수정
+                  </S.UpdateButton>
+                  <S.UpdateButton $color="#e31c5f" onClick={() => deleteHandler(id)}>
+                    삭제
+                  </S.UpdateButton>
                 </S.PostBtn>
               )}
             </div>
           </S.PostHeader>
+          <S.LikeButton onClick={likeHandler}>
+            <img
+              src={likeHeart}
+              width={30}
+              style={{ filter: liked ? 'invert(100%)' : 'invert(0%)' }}
+              alt="사진"
+            />
+            <span>{likes === 0 ? '' : likes}</span>
+          </S.LikeButton>
           <S.PostContent>
             <Viewer initialValue={contents} />
           </S.PostContent>

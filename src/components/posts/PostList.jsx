@@ -14,14 +14,13 @@ const PostList = () => {
     <>
       <S.PostContainer>
         <S.PostWrapper>
-          {posts?.map((item, idx) => {
+          {posts?.map((item) => {
             return (
-              <S.PostList key={idx} onClick={() => navigate(`/post/${item.id}`)}>
+              <S.PostList key={item.id} onClick={() => navigate(`/post/${item.id}`)}>
                 <S.PostTitleContentsDate>
                   <S.PostTitle>{item.title}</S.PostTitle>
                   <S.PostContent>{item.contents}</S.PostContent>
                   <S.PostDate>{getFormattedDate(item.createdAt)}</S.PostDate>
-                  {/* <div>게시글 좋아요 : {item.likeCount}</div> */}
                 </S.PostTitleContentsDate>
                 <S.Postimge>
                   <img src={defaultImage} alt="사진" />
