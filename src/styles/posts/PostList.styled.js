@@ -69,6 +69,7 @@ export const Postimge = styled.div`
   & img {
     width: 150px;
     height: 150px;
+    object-fit: cover;
   }
 `;
 

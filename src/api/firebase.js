@@ -1,9 +1,4 @@
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithEmailAndPassword,
-  updateProfile
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import {
   doc,
   addDoc,
@@ -32,9 +27,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
+export const storage = getStorage(app);
 const fnbRef = collection(db, 'fnb');
 const postsRef = collection(db, 'posts');
 const commentsRef = collection(db, 'comments');
@@ -108,8 +103,7 @@ export const getSpecificMapList = async (name) => {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       // 특정 필드 값과 일치하는 문서
-      if (data['category_group_name'] === specificValue)
-        documentsWithSpecificValue.push({ id: doc.id, data: data });
+      if (data['category_group_name'] === specificValue) documentsWithSpecificValue.push({ id: doc.id, data: data });
     });
 
     return documentsWithSpecificValue;
