@@ -1,3 +1,4 @@
+import { ModalLoading } from 'components/common/modal/ModalLoading';
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setMapInfo } from 'store/modules/mapInfoSlice';
@@ -10,6 +11,8 @@ export const useKakaoFn = () => {
   const [places, setPlaces] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [currentInfowindow, setCurrentInfowindow] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMapLoading, setIsMapLoading] = useState(true);
   const selectedMarkerInfoWindow = useRef(null);
 
   const displayMarker = (place, index) => {
@@ -91,6 +94,8 @@ export const useKakaoFn = () => {
   const handleCurrentLocation = () => {
     if (navigator.geolocation) {
       // console.log('로딩 창 오픈');
+      setIsLoading(true);
+      setIsMapLoading(false);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -114,6 +119,8 @@ export const useKakaoFn = () => {
 
           infowindow.open(map, currentLocationMarker);
           // console.log('로딩 창 닫기');
+          setIsLoading(false);
+          setIsMapLoading(true);
         },
         (error) => {
           console.error('현재위치 찾기 오류발생! 다른브라우저를 사용하세요!', error);
@@ -126,6 +133,8 @@ export const useKakaoFn = () => {
   return {
     setMap,
     keyword,
+    isLoading,
+    isMapLoading,
     setKeyword,
     searchResults,
     selectedMarkerInfoWindow,
