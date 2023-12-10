@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const HomeWrapper = styled.div`
   gap: 10px;
   width: 100vw;
-  padding: 20px;
+  /* padding: 20px; */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -12,7 +12,6 @@ export const HomeWrapper = styled.div`
 export const FnbWrapper = styled.div`
   gap: 10px;
   display: flex;
-  flex-wrap: wrap; // 수평 스크롤 구현 완료되면 지워줍니다.
   align-items: center;
   justify-content: center;
 `;
