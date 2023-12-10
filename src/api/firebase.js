@@ -288,7 +288,6 @@ export const nicknameUpdate = async (nickname) => {
 export const getLikes = async (postId) => {
   const postRef = doc(db, 'posts', postId);
   const postDoc = await getDoc(postRef);
-  console.log('postDoc: ', postDoc.data());
   return postDoc.data().likesCount;
 };
 
@@ -315,13 +314,11 @@ export const pressLike = async ({ postId, uid }) => {
       updatedLikedBy = [...likedBy, uid];
       likesCountChange = 1;
     }
-    console.log('updatedLikedBy: ', updatedLikedBy);
 
     await updateDoc(postRef, {
       likedBy: updatedLikedBy,
       likesCount: increment(likesCountChange)
     });
-    console.log('좋아요 완료!');
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;
