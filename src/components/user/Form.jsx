@@ -1,17 +1,12 @@
-import React from 'react';
-import { loginUser, registerUser } from 'api/firebase';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import 'react-toastify/dist/ReactToastify.css';
+import * as S from '../../styles/user/User.styled';
+import { useAuth } from 'hooks/useAuth';
 import useInput from 'hooks/useInput';
 import useValid from 'hooks/useValid';
-import * as S from '../../styles/user/User.styled';
-import { setUserInfo } from 'store/modules/authSlice';
+import React from 'react';
 
 const Form = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const location = useLocation();
   const [email, onChangeEmail] = useInput();
   const [password, onChangePassword] = useInput();
@@ -20,33 +15,7 @@ const Form = () => {
   const { isValid, emailErrorMessage, passwordErrorMessage } = useValid(email, password, passwordChk, nickname);
   const isPathAvailability = location.pathname === '/login';
 
-  // 회원가입 함수
-  const signupHandler = async (e) => {
-    if (password !== passwordChk) {
-      console.error('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    e.preventDefault();
-    try {
-      await registerUser(email, password, nickname);
-      navigate('/login');
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  // 로그인 함수
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    try {
-      const userInfo = await loginUser(email, password);
-      dispatch(setUserInfo(userInfo));
-      toast.success(`${userInfo.displayName}님 반가워요!`);
-      if (userInfo.accessToken) navigate('/');
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
+  const { registerAuthUser, loginAuthUser } = useAuth();
 
   return (
     <>
@@ -95,10 +64,13 @@ const Form = () => {
           <>
             <S.Button
               type="submit"
-              onClick={loginHandler}
               disabled={!isValid}
               $active={!isValid}
               $isWidth={isPathAvailability}
+              onClick={(e) => {
+                e.preventDefault();
+                loginAuthUser({ email, password });
+              }}
             >
               로그인
             </S.Button>
@@ -111,10 +83,13 @@ const Form = () => {
           <>
             <S.Button
               type="submit"
-              onClick={signupHandler}
               disabled={!isValid}
               $active={!isValid}
               $isWidth={isPathAvailability}
+              onClick={(e) => {
+                e.preventDefault();
+                registerAuthUser({ email, password, nickname });
+              }}
             >
               회원가입
             </S.Button>
@@ -125,7 +100,6 @@ const Form = () => {
           </>
         )}
       </S.Wrapper>
-      <ToastContainer autoClose={1000} />
     </>
   );
 };

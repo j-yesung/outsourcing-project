@@ -22,7 +22,6 @@ export const useComments = () => {
   const updateCommentMutation = useMutation({
     mutationFn: updateComment,
     onSuccess: () => {
-      console.log('안녕');
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
     }
   });

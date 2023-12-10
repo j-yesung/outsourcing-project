@@ -1,16 +1,19 @@
 import React, { useRef, useState } from 'react';
 import userIcon from '../../assets/user.svg';
 import { fileUpload } from 'api/firebase';
-import { useDispatch } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
+import NickName from 'components/user/NickName';
+import * as S from '../../styles/pages/Profile.styled';
 import { setUserInfo } from 'store/modules/authSlice';
 
 export const ImgUpload = () => {
   const imgRef = useRef();
   const dispatch = useDispatch();
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const userInfo = useSelector((state) => state.authSlice.userInfo);
   const [img, setImg] = useState(userInfo.image || userIcon);
   const [selectFile, setSelectFile] = useState(null);
-  console.log('userInfo: ', userInfo);
 
   // 파일 선택
   const handleImageUpload = (e) => {
@@ -27,33 +30,25 @@ export const ImgUpload = () => {
 
   // 업로드
   const uploadHandler = async () => {
-    const downloadURL = await fileUpload(userInfo, selectFile);
-    const updateUserInfo = { ...userInfo, image: downloadURL };
-    dispatch(setUserInfo(updateUserInfo));
-  };
-
-  const onClearImage = async () => {
-    // if (window.confirm('이미지를 삭제하시겠습니까?')) {
-    //   setDownloadURL(userIcon);
-    //   inputRef.current.value = null;
-    //   const imageRef = ref(storage, downloadURL);
-    //   try {
-    //     await deleteObject(imageRef);
-    //     updateProfile(authUser, { photoURL: userIcon })
-    //       .then(() => console.log('프로필 이미지가 제거되었습니다.'))
-    //       .catch(error => console.error('프로필 이미지를 제거 실패했습니다.', error));
-    //   } catch (error) {
-    //     console.error('공습 경보!', error);
-    //   }
-    // }
+    if (!selectFile) return toast.error('이미지를 선택해 주세요.');
+    toast.success('이미지 업데이트 완료');
+    const downloadURL = await fileUpload(selectFile);
+    dispatch(setUserInfo({ ...userInfo, image: downloadURL }));
   };
 
   return (
     <>
-      <img src={img} width={50} alt="사진" />
-      <input type="file" ref={imgRef} onChange={handleImageUpload} />
-      <button onClick={uploadHandler}>업로드</button>
-      {/* <input ref={imgRef} onChange={handleImageUpload} type="file" style={{ display: 'none' }} /> */}
+      <S.Wrapper>
+        <S.Image src={img} alt="사진" />
+        <S.ButtonBox>
+          <NickName /> {/**  */}
+          <input type="file" ref={imgRef} onChange={handleImageUpload} style={{ display: 'none' }} />
+          <S.UploadButton onClick={() => imgRef.current.click()}>파일 찾기</S.UploadButton>
+          <S.UploadButton onClick={uploadHandler}>업로드</S.UploadButton>
+        </S.ButtonBox>
+        {/* <input ref={imgRef} onChange={handleImageUpload} type="file" style={{ display: 'none' }} /> */}
+      </S.Wrapper>
+      <ToastContainer autoClose={1000} />
     </>
   );
 };
