@@ -12,7 +12,7 @@ function Content() {
 
   return (
     <S.Wrapper>
-      <span>내가 작성한 매거진</span>
+      <S.Title>나의 매거진</S.Title>
       {posts
         ?.filter((user) => user.uid === userInfo.uid)
         .map((item) => (

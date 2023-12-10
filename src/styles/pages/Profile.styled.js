@@ -10,6 +10,7 @@ export const Image = styled.img`
   width: 380px;
   height: 300px;
   border-radius: 20px;
+  box-shadow: 2px 2px 8px #ccc;
 `;
 export const ButtonBox = styled.div`
   gap: 10px;
@@ -63,7 +64,7 @@ export const EditNameInput = styled.input`
 export const TopWrapper = styled.div`
   display: grid;
   grid-auto-flow: dense;
-  grid-auto-columns: 625px 506px auto;
+  grid-auto-columns: 1100px 506px auto;
   -webkit-box-align: center;
   align-items: center;
   height: 100%;

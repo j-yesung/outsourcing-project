@@ -28,6 +28,7 @@ export const Logo = styled.h1`
   font-size: 30px;
   margin-bottom: 10px;
   justify-content: center;
+  font-family: 'JalnanGothic';
 `;
 export const Form = styled.form`
   /* gap: 15px; */
@@ -52,7 +53,8 @@ export const Button = styled.button`
   outline: none;
   margin: 20px 0px 10px 0px;
   border-radius: 5px;
-  background-color: ${(props) => (props.$active ? '#F5F7F8' : '#39a7ff')};
+  color: ${(props) => (props.$active ? 'gray' : 'white')};
+  background-color: ${(props) => (props.$active ? '#F5F7F8' : '#e31c5f')};
 `;
 export const LinkWrapper = styled.div`
   text-align: center;

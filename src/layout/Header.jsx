@@ -40,11 +40,11 @@ const Header = () => {
               </>
             ) : (
               <>
-                <Link to={'/'} $isActive={location.pathname === '/'}>
+                <S.StyledLink to={'/'} $isActive={location.pathname === '/'}>
                   메인으로
-                </Link>
-                <Link to={'/login'}>로그인</Link>
-                <Link to={'/signup'}>회원가입</Link>
+                </S.StyledLink>
+                <S.StyledLink to={'/login'}>로그인</S.StyledLink>
+                <S.StyledLink to={'/signup'}>회원가입</S.StyledLink>
               </>
             )}
           </S.HeaderButtons>

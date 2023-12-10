@@ -54,7 +54,7 @@ const Map = () => {
       <S.Container>
         <div>
           <S.SearchBox>
-            <input
+            <S.SearchInput
               type="text"
               placeholder="검색어를 입력하세요."
               value={keyword}
