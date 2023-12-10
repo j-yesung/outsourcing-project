@@ -63,11 +63,13 @@ const Map = () => {
           selectedMarkerInfoWindow.current.close();
         }
 
-        const infowindowContent = `<div style="padding:5px;font-size:12px;">${place.place_name} - ${place.address_name}<br/>도로명 주소: ${place.road_address_name}</div>`;
+        const infowindowContent = `<div style="padding: 5px; font-size: 12px; max-width: 200px; max-height: 200px; overflow: auto;">${place.place_name} - ${place.address_name}<br/>도로명 주소: ${place.road_address_name}</div>`;
         const infowindow = new window.kakao.maps.InfoWindow({
-          content: infowindowContent
-        });
-        infowindow.open(map, marker);
+          content: infowindowContent,
+          maxWidth: 200, 
+          maxHeight: 200 
+          });
+          infowindow.open(map, marker);
 
         selectedMarkerInfoWindow.current = infowindow;
 
@@ -137,10 +139,11 @@ const Map = () => {
           });
 
           const infowindow = new window.kakao.maps.InfoWindow({
-            content: '<div style="padding:5px;font-size:15px;text-align:center;">현위치</div>'
+            content: '<div style="padding: 5px; font-size: 15px; text-align: center;">현위치</div>'
           });
-
+          
           setCurrentInfowindow(infowindow);
+          
 
           infowindow.open(map, currentLocationMarker);
           // console.log('로딩 창 닫기');

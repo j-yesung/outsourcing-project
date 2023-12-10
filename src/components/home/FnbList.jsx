@@ -4,12 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setFnbInfo } from 'store/modules/mapInfoSlice';
 import * as S from '../../styles/pages/Home.styled';
 import { useNavigate } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
 
 const FnbList = () => {
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
-
+  console.log('fnbData:', fnbData);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,18 +32,30 @@ const FnbList = () => {
     };
     fetchData();
   }, [dispatch]);
-
+  
+  
   return (
     <>
       {fnbData && (
-        <S.FnbWrapper>
+        <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+          spaceBetween={0}
+          slidesPerView={8}
+          navigation
+          pagination={{ clickable: true }}
+          loop={true}
+        >
           {fnbData.map((item, index) => (
-            <S.FnbList key={index} onClick={() => navigate(`/detail/${item.id}`)}>
-              {/* 이미지가 들어가야 합니다. */}
-              <p>{item.place_name}</p>
-            </S.FnbList>
+            <SwiperSlide key={index}>
+              <S.FnbWrapper>
+                <S.FnbList onClick={() => navigate(`/detail/${item.id}`)}>
+                  {/* 이미지가 들어가야 합니다. */}
+                  <p>{item.place_name}</p>
+                </S.FnbList>
+              </S.FnbWrapper>
+            </SwiperSlide>
           ))}
-        </S.FnbWrapper>
+        </Swiper>
       )}
     </>
   );
