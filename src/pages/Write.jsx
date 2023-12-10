@@ -69,7 +69,7 @@ const Write = () => {
           ref={titleRef}
         />
         <Editor
-          height="800px"
+          height="600px"
           placeholder="내용을 입력해주세요"
           previewStyle="tab"
           initialEditType="markdown"
@@ -87,8 +87,8 @@ const Write = () => {
           usageStatistics={false}
           ref={editorRef}
         />
-        <button onClick={onClickHandler}>Click</button>
       </Box>
+       <S.button onClick={onClickHandler}>글 등록</S.button>
     </S.Container>
   );
 };

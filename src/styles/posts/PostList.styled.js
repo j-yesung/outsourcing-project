@@ -5,6 +5,7 @@ export const PostContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 10px 0;
+  cursor: pointer;
 `;
 export const PostWrapper = styled.div`
   width: 75%;
@@ -36,8 +37,9 @@ export const PostTitle = styled.div`
   font-size: 22px;
   height: 30px;
   margin: 0 auto;
-  font-weight: 600;
+  font-weight: 1000;
   line-height: 120%;
+  
 `;
 export const PostContent = styled.div`
   height: 135px;
@@ -48,15 +50,17 @@ export const PostContent = styled.div`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  line-height: 25px;
   max-height: 75px;
-  font-weight: 600;
-  line-height: 120%;
+  font-weight: 400;
+  line-height: 132%;
+  font-size: 15px;
+  padding-top: 20px;
 `;
 export const PostDate = styled.div`
   height: 20;
   margin: 0 auto;
   color: gray;
+  margin-top: 20px;
 `;
 export const PostTitleContentsDate = styled.div``;
 
