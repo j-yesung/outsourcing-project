@@ -19,6 +19,12 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 700;
     font-style: normal;
   }
+  @font-face {
+    font-family: 'JalnanGothic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/JalnanGothic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
 
   body {
     font-family: 'Pretendard-Regular';
