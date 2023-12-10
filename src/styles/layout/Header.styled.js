@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const HeaderWrapper = styled.header`
@@ -5,14 +6,15 @@ export const HeaderWrapper = styled.header`
   padding: 20px;
   align-items: center;
   justify-content: center;
+`;
+export const StyledLink = styled(Link)`
+  color: black;
+  text-decoration: none;
+  font-size: 15px;
+  color: ${(props) => props.$isActive && '#e31c5f'};
 
-  a {
-    color: black;
-    text-decoration: none;
-    font-size: 15px;
-    &:hover {
-      color: #e31c5f;
-    }
+  &:hover {
+    color: #e31c5f;
   }
 `;
 export const HeaderContainer = styled.div`

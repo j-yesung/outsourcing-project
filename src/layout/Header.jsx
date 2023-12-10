@@ -2,10 +2,11 @@ import React from 'react';
 import * as S from '../styles/layout/Header.styled';
 import { useAuth } from 'hooks/useAuth';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userInfo = useSelector((state) => state.authSlice.userInfo);
 
   const { logOutAuthUser } = useAuth();
@@ -21,17 +22,27 @@ const Header = () => {
             {userInfo && userInfo !== null ? (
               <>
                 {/* <p>{userInfo.nickname}님 안녕하세요.</p> */}
-                <Link to={'/'}>메인으로</Link>
-                <Link to={'/write'}>글 작성</Link>
-                <Link to={'/post'}>포스트</Link>
-                <Link to={'/mypage'}>마이페이지</Link>
-                <Link to={'/'} onClick={logOutAuthUser}>
+                <S.StyledLink to={'/'} $isActive={location.pathname === '/'}>
+                  메인으로
+                </S.StyledLink>
+                <S.StyledLink to={'/write'} $isActive={location.pathname === '/write'}>
+                  글 작성
+                </S.StyledLink>
+                <S.StyledLink to={'/post'} $isActive={location.pathname === '/post'}>
+                  포스트
+                </S.StyledLink>
+                <S.StyledLink to={'/mypage'} $isActive={location.pathname === '/mypage'}>
+                  마이페이지
+                </S.StyledLink>
+                <S.StyledLink to={'/'} onClick={logOutAuthUser}>
                   로그아웃
-                </Link>
+                </S.StyledLink>
               </>
             ) : (
               <>
-                <Link to={'/'}>메인으로</Link>
+                <Link to={'/'} $isActive={location.pathname === '/'}>
+                  메인으로
+                </Link>
                 <Link to={'/login'}>로그인</Link>
                 <Link to={'/signup'}>회원가입</Link>
               </>
