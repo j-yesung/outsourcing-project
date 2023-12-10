@@ -9,7 +9,7 @@ export const usePosts = () => {
   const navigate = useNavigate();
 
   // 조회
-  const { data: posts } = useQuery({
+  const { data: posts, isLoading: postsLoading } = useQuery({
     queryKey: [QUERY_KEY],
     queryFn: getPosts
   });
@@ -39,6 +39,7 @@ export const usePosts = () => {
 
   return {
     posts,
+    postsLoading,
     __addPosts: addPostsMutation.mutate,
     __updatePosts: updatePostsMutation.mutate,
     __deletePosts: deletePostsMutation.mutate

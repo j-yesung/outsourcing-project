@@ -1,8 +1,16 @@
 import styled from 'styled-components';
+import { TopWrapper } from 'styles/pages/Profile.styled';
 
+export const Wrapper = styled(TopWrapper)`
+  padding: 20px 20px 20px 40px;
+`;
 export const Container = styled.div`
   margin: 20px auto;
   width: 800px;
+`;
+export const Title = styled.span`
+  font-size: 24px;
+  font-weight: bold;
 `;
 export const PostHeader = styled.div`
   line-height: 3;
@@ -34,10 +42,17 @@ export const PostContent = styled.div`
 `;
 
 export const TempDiv = styled.div`
-  border: 2px solid pink;
   margin: 5px;
   padding: 5px;
-  line-height: 1.2;
   font-size: 12px;
-  border: '1px solid pink';
+  cursor: pointer;
+  line-height: 1.2;
+  border-bottom: 1px solid #ccc;
+
+  &:hover {
+    transition: 0.5s;
+    background-color: #f1efef;
+    transform: translateY(-2px);
+    box-shadow: 2px 2px 8px #ccc;
+  }
 `;

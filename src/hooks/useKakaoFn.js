@@ -1,4 +1,3 @@
-import { ModalLoading } from 'components/common/modal/ModalLoading';
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setMapInfo } from 'store/modules/mapInfoSlice';
@@ -8,7 +7,6 @@ export const useKakaoFn = () => {
   const [keyword, setKeyword] = useState('');
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
-  const [places, setPlaces] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [currentInfowindow, setCurrentInfowindow] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +76,6 @@ export const useKakaoFn = () => {
 
       setMarkers(newMarkers);
       map.setBounds(bounds);
-      setPlaces(newPlaces);
       setSearchResults(newPlaces);
       dispatch(setMapInfo(newPlaces));
     }

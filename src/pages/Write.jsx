@@ -71,7 +71,7 @@ const Write = () => {
           height="500px"
           placeholder="내용을 입력해주세요!"
           previewStyle="tab"
-          initialEditType="wysiwyg"
+          initialEditType="markdown"
           hideModeSwitch={true}
           toolbarItems={[
             // 옵션 설정

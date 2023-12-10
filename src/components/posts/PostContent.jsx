@@ -2,10 +2,11 @@ import { usePosts } from 'hooks/usePosts';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getFormattedDate } from 'utils/date';
-import { Editor } from '@toast-ui/react-editor';
+import { Editor, Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import * as S from '../../styles/posts/PostContent.styled';
+import * as M from '../../styles/modal/Lodaing.styled';
 import React, { useEffect, useRef, useState } from 'react';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
@@ -37,7 +38,7 @@ const PostDetail = () => {
   const editorRef = useRef();
   const editTitleRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
-  const { posts, __updatePosts, __deletePosts } = usePosts();
+  const { posts, postsLoading, __updatePosts, __deletePosts } = usePosts();
   const { title, contents, createdAt, uid } = posts ? posts.find((item) => item.id === id) : [];
   const userInfo = useSelector((state) => state.authSlice.userInfo);
 
@@ -58,6 +59,10 @@ const PostDetail = () => {
     __updatePosts({ id, updates });
     setIsEditing(false);
   };
+
+  if (postsLoading) {
+    return <M.Loader />;
+  }
 
   return (
     <S.Container>
@@ -111,7 +116,7 @@ const PostDetail = () => {
             </div>
           </S.PostHeader>
           <S.PostContent>
-            <p>{contents}</p>
+            <Viewer initialValue={contents} />
           </S.PostContent>
         </>
       )}
