@@ -20,8 +20,33 @@ export const PostInput = styled.input`
   }
 `;
 
-export const PostThumbnailInput = styled.input``;
-
+export const PostThumbnailLabel = styled.label`
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  vertical-align: middle;
+  background-color: #999999;
+  cursor: pointer;
+  height: 40px;
+  margin-left: 14px;
+`;
+export const PostThumbnailInput = styled.input`
+  display: inline-block;
+  height: 40px;
+  padding: 0 10px;
+  vertical-align: middle;
+  border: 1px solid #dddddd;
+  width: 84%;
+  color: #999999;
+`;
+export const PostThumbnailChkInput = styled.input`
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+`;
 export const button = styled.div`
   color: white;
   background-color: black;
@@ -38,7 +63,7 @@ export const button = styled.div`
   justify-content: center;
   align-items: center;
   margin: auto;
-  margin-top: 10px;
+  margin-top: 15px;
   &:hover {
     background-color: orange;
   }

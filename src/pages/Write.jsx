@@ -7,7 +7,7 @@ import { Editor } from '@toast-ui/react-editor';
 import { useSelector } from 'react-redux';
 import { usePosts } from 'hooks/usePosts';
 import '@toast-ui/editor/dist/i18n/ko-kr';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import { storage, auth } from 'api/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -39,6 +39,8 @@ const Write = () => {
   const titleRef = useRef();
   const inputRef = useRef({});
   const { __addPosts } = usePosts();
+
+  const [input, setInput] = useState('');
 
   const onClickHandler = async () => {
     try {
@@ -107,9 +109,19 @@ const Write = () => {
           plugins={[[colorSyntax, colorSyntaxOptions]]}
           usageStatistics={false}
           ref={editorRef}
-        />
+        />{' '}
+        <div style={{ marginTop: '15px' }}>
+          <S.PostThumbnailInput
+            value={input}
+            placeholder="첨부파일"
+            ref={(props) => (inputRef.current['img'] = props)}
+            onChange={() => {}}
+          />
+          <S.PostThumbnailLabel for="file">썸네일 등록</S.PostThumbnailLabel>
+          <S.PostThumbnailChkInput type="file" id="file" onChange={(e) => setInput(e.currentTarget.files[0].name)} />
+        </div>
       </Box>
-      <S.PostThumbnailInput type="file" ref={(props) => (inputRef.current['img'] = props)} />
+
       <S.button onClick={onClickHandler}>글 등록</S.button>
     </S.Container>
   );
