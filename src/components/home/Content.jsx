@@ -1,6 +1,6 @@
 import ScrollToTopBtn from 'components/posts/ScrollToTopBtn';
 import * as S from '../../styles/posts/PostList.styled';
-import defaultImage from '../../assets/user.svg';
+import defaultImage from '../../assets/food.jpg';
 import { useNavigate } from 'react-router-dom';
 import { getFormattedDate } from 'utils/date';
 import { useSelector } from 'react-redux';
@@ -28,7 +28,7 @@ function Content() {
                     <S.PostDate>{getFormattedDate(item.createdAt)}</S.PostDate>
                   </S.PostTitleContentsDate>
                   <S.Postimge>
-                    <img src={defaultImage} alt="사진" />
+                    <img src={item.imgurl == '' ? defaultImage : item.imgurl} alt="" />
                   </S.Postimge>
                 </S.PostList>
               );

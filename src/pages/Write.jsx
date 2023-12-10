@@ -9,6 +9,8 @@ import { usePosts } from 'hooks/usePosts';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import React, { useRef } from 'react';
 import Box from '@mui/material/Box';
+import { storage, auth } from 'api/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const colorSyntaxOptions = {
   preset: [
@@ -35,27 +37,43 @@ const Write = () => {
   const userInfo = useSelector((state) => state.authSlice.userInfo);
   const editorRef = useRef();
   const titleRef = useRef();
+  const inputRef = useRef({});
   const { __addPosts } = usePosts();
 
   const onClickHandler = async () => {
     try {
       const contentMark = editorRef?.current?.getInstance().getMarkdown();
-      if (contentMark === '' || titleRef.current.value === '')
-        return alert('제목과 내용을 입력하세요');
+      const photoUrl = await handleThumbnailUpload();
+      if (contentMark === '' || titleRef.current.value === '') return alert('제목과 내용을 입력하세요');
       const newPost = {
         title: titleRef.current.value,
         contents: contentMark,
         createdAt: Date.now(),
         uid: userInfo.uid,
-        isEdit: false,
         likeCount: 0,
-        likedBy: []
+        likedBy: [],
+        imgurl: photoUrl || ''
       };
       __addPosts(newPost);
     } catch (error) {
       console.log('error -> ', error);
     }
   };
+
+  const handleThumbnailUpload = async () => {
+    const imgFile = inputRef.current.img.files[0];
+    try {
+      console.log(imgFile);
+      if (!imgFile) return;
+      const imgRef = ref(storage, `posts/${auth.currentUser.uid}/${imgFile.name}`);
+      await uploadBytes(imgRef, imgFile);
+      const downloadUrl = await getDownloadURL(imgRef);
+      return downloadUrl;
+    } catch (error) {
+      console.log('error -> ', error);
+    }
+  };
+
   return (
     <S.Container>
       <Box sx={{ m: 2 }} style={{ width: '800px', margin: '0 auto' }}>
@@ -91,6 +109,7 @@ const Write = () => {
           ref={editorRef}
         />
       </Box>
+      <S.PostThumbnailInput type="file" ref={(props) => (inputRef.current['img'] = props)} />
       <S.button onClick={onClickHandler}>글 등록</S.button>
     </S.Container>
   );
