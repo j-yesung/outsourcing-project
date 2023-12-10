@@ -48,8 +48,6 @@ const Map = () => {
     };
   }, [selectedMarkerInfoWindow, setMap]);
 
-  console.log('isLoading', isLoading, 'isMapLoading', isMapLoading);
-
   return (
     <>
       <S.GlobalStyle />

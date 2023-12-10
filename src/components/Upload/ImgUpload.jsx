@@ -46,7 +46,6 @@ export const ImgUpload = () => {
           <S.UploadButton onClick={() => imgRef.current.click()}>파일 찾기</S.UploadButton>
           <S.UploadButton onClick={uploadHandler}>업로드</S.UploadButton>
         </S.ButtonBox>
-        {/* <input ref={imgRef} onChange={handleImageUpload} type="file" style={{ display: 'none' }} /> */}
       </S.Wrapper>
       <ToastContainer autoClose={1000} />
     </>

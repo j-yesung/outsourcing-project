@@ -2,7 +2,7 @@ import { usePosts } from 'hooks/usePosts';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getFormattedDate } from 'utils/date';
-import { Editor } from '@toast-ui/react-editor';
+import { Editor, Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import * as S from '../../styles/posts/PostContent.styled';
@@ -111,7 +111,7 @@ const PostDetail = () => {
             </div>
           </S.PostHeader>
           <S.PostContent>
-            <p>{contents}</p>
+            <Viewer initialValue={contents} />
           </S.PostContent>
         </>
       )}

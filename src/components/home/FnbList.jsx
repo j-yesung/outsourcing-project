@@ -1,22 +1,20 @@
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { setFnbInfo } from 'store/modules/mapInfoSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import * as S from '../../styles/pages/Home.styled';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { useNavigate } from 'react-router-dom';
 import { getMapList } from 'api/firebase';
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFnbInfo } from 'store/modules/mapInfoSlice';
-import * as S from '../../styles/pages/Home.styled';
-import { useNavigate } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
-import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-
+import 'swiper/css';
 
 const FnbList = () => {
-  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const fnbData = useSelector((state) => state.mapInfoSlice.fnbInfo);
-  console.log('fnbData:', fnbData);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,13 +30,12 @@ const FnbList = () => {
     };
     fetchData();
   }, [dispatch]);
-  
-  
+
   return (
     <>
       {fnbData && (
         <Swiper
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
+          modules={[Navigation, Pagination, Scrollbar, A11y]}
           spaceBetween={0}
           slidesPerView={8}
           navigation
