@@ -1,4 +1,9 @@
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  updateProfile
+} from 'firebase/auth';
 import {
   doc,
   addDoc,
@@ -9,7 +14,9 @@ import {
   collection,
   getFirestore,
   query,
-  orderBy
+  orderBy,
+  getDoc,
+  increment
 } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { initializeApp } from 'firebase/app';
@@ -101,7 +108,8 @@ export const getSpecificMapList = async (name) => {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       // 특정 필드 값과 일치하는 문서
-      if (data['category_group_name'] === specificValue) documentsWithSpecificValue.push({ id: doc.id, data: data });
+      if (data['category_group_name'] === specificValue)
+        documentsWithSpecificValue.push({ id: doc.id, data: data });
     });
 
     return documentsWithSpecificValue;
@@ -266,6 +274,54 @@ export const fileUpload = async (file) => {
 export const nicknameUpdate = async (nickname) => {
   try {
     await updateProfile(auth.currentUser, { displayName: nickname });
+  } catch (error) {
+    console.error('공습 경보 😵', error);
+    throw error;
+  }
+};
+
+/**
+ * 좋아요 조회
+ * @param {*} postId 문서 ID
+ * @returns 좋아요 수
+ */
+export const getLikes = async (postId) => {
+  const postRef = doc(db, 'posts', postId);
+  const postDoc = await getDoc(postRef);
+  console.log('postDoc: ', postDoc.data());
+  return postDoc.data().likesCount;
+};
+
+/**
+ * 좋아요 추가
+ * @param {*} param { 문서 ID, 유저 ID }
+ */
+export const pressLike = async ({ postId, uid }) => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postDoc = await getDoc(postRef);
+
+    if (!postDoc.exists) throw new Error('문서 없음');
+
+    const likedBy = postDoc.data().likedBy || [];
+
+    let updatedLikedBy;
+    let likesCountChange = 0;
+
+    if (likedBy.includes(uid)) {
+      updatedLikedBy = likedBy.filter((id) => id !== uid);
+      likesCountChange = -1;
+    } else {
+      updatedLikedBy = [...likedBy, uid];
+      likesCountChange = 1;
+    }
+    console.log('updatedLikedBy: ', updatedLikedBy);
+
+    await updateDoc(postRef, {
+      likedBy: updatedLikedBy,
+      likesCount: increment(likesCountChange)
+    });
+    console.log('좋아요 완료!');
   } catch (error) {
     console.error('공습 경보 😵', error);
     throw error;

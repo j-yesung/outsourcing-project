@@ -21,9 +21,10 @@ const PostList = () => {
                   <S.PostTitle>{item.title}</S.PostTitle>
                   <S.PostContent>{item.contents}</S.PostContent>
                   <S.PostDate>{getFormattedDate(item.createdAt)}</S.PostDate>
+                  {/* <div>게시글 좋아요 : {item.likeCount}</div> */}
                 </S.PostTitleContentsDate>
                 <S.Postimge>
-                  <img src={defaultImage} />
+                  <img src={defaultImage} alt="사진" />
                 </S.Postimge>
               </S.PostList>
             );

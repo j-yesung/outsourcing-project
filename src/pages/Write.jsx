@@ -40,13 +40,16 @@ const Write = () => {
   const onClickHandler = async () => {
     try {
       const contentMark = editorRef?.current?.getInstance().getMarkdown();
-      if (contentMark === '' || titleRef.current.value === '') return alert('제목과 내용을 입력하세요');
+      if (contentMark === '' || titleRef.current.value === '')
+        return alert('제목과 내용을 입력하세요');
       const newPost = {
         title: titleRef.current.value,
         contents: contentMark,
         createdAt: Date.now(),
         uid: userInfo.uid,
-        isEdit: false
+        isEdit: false,
+        likeCount: 0,
+        likedBy: []
       };
       __addPosts(newPost);
     } catch (error) {
@@ -88,7 +91,7 @@ const Write = () => {
           ref={editorRef}
         />
       </Box>
-       <S.button onClick={onClickHandler}>글 등록</S.button>
+      <S.button onClick={onClickHandler}>글 등록</S.button>
     </S.Container>
   );
 };

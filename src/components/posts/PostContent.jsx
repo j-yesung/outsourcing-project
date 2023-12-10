@@ -10,6 +10,8 @@ import * as M from '../../styles/modal/Lodaing.styled';
 import React, { useEffect, useRef, useState } from 'react';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
+import { useLikes } from 'hooks/useLikes';
+import likeHeart from '../../assets/pngwing.com.png';
 
 const colorSyntaxOptions = {
   preset: [
@@ -38,6 +40,8 @@ const PostDetail = () => {
   const editorRef = useRef();
   const editTitleRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
+  const { likes, increaseLike } = useLikes(id);
+  console.log('likes: ', likes);
   const { posts, postsLoading, __updatePosts, __deletePosts } = usePosts();
   const { title, contents, createdAt, uid } = posts ? posts.find((item) => item.id === id) : [];
   const userInfo = useSelector((state) => state.authSlice.userInfo);
@@ -109,8 +113,12 @@ const PostDetail = () => {
               <S.PostDate>{getFormattedDate(createdAt)}</S.PostDate>
               {userInfo.uid === uid && (
                 <S.PostBtn>
+                  <button onClick={() => increaseLike({ postId: id, uid })}>
+                    <img src={likeHeart} width={30} alt="사진" />
+                  </button>
                   <button onClick={() => setIsEditing(true)}>수정</button>
                   <button onClick={() => deleteHandler(id)}>삭제</button>
+                  <span>{likes}</span>
                 </S.PostBtn>
               )}
             </div>
