@@ -34,8 +34,7 @@ export const UploadButton = styled.button`
   background-color: #e31c5f;
 
   &:hover {
-    color: black;
-    background-color: #faeed1;
+    box-shadow: 2px 2px 8px #ccc;
   }
 `;
 export const NameWrapper = styled.div`

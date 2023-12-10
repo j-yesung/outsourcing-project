@@ -5,7 +5,15 @@ export const HeaderWrapper = styled.header`
   padding: 20px;
   align-items: center;
   justify-content: center;
-  /* justify-content: space-between; */
+
+  a {
+    color: black;
+    text-decoration: none;
+    font-size: 15px;
+    &:hover {
+      color: #e31c5f;
+    }
+  }
 `;
 export const HeaderContainer = styled.div`
   display: grid;
@@ -13,7 +21,6 @@ export const HeaderContainer = styled.div`
   grid-auto-columns: 560px 506px auto;
   -webkit-box-align: center;
   align-items: center;
-  /* width: 1240px; */
   height: 100%;
   padding-left: 0px;
   padding-right: 0px;
@@ -39,7 +46,7 @@ export const HeaderButtons = styled.div`
   display: inline-flex;
   -webkit-box-pack: end;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 20px;
   box-sizing: border-box;
   width: 100%;
   height: 20px;
