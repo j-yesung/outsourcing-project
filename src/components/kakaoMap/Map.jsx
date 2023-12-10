@@ -2,17 +2,28 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useKakaoFn } from 'hooks/useKakaoFn';
 import * as S from '../../styles/kakaoMap/kakaoMap.styled';
+import { ModalLoading } from 'components/common/modal/ModalLoading';
 
 const Map = () => {
   const navigate = useNavigate();
 
-  const { setMap, keyword, setKeyword, searchResults, selectedMarkerInfoWindow, handleEnterKeyPress, searchPlaces, handleCurrentLocation } =
-    useKakaoFn();
+  const {
+    setMap,
+    keyword,
+    isLoading,
+    isMapLoading,
+    setKeyword,
+    searchResults,
+    selectedMarkerInfoWindow,
+    handleEnterKeyPress,
+    searchPlaces,
+    handleCurrentLocation
+  } = useKakaoFn();
 
   useEffect(() => {
     const script = document.createElement('script');
     script.async = true;
-    script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=88ac229e7abd107e56c0799e195683f1';
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_API_KEY}`;
     document.head.appendChild(script);
 
     script.onload = () => {
@@ -37,25 +48,32 @@ const Map = () => {
     };
   }, [selectedMarkerInfoWindow, setMap]);
 
+  console.log('isLoading', isLoading, 'isMapLoading', isMapLoading);
+
   return (
     <>
       <S.GlobalStyle />
       <S.Container>
         <div>
           <S.SearchBox>
-            <S.Input
+            <input
               type="text"
               placeholder="검색어를 입력하세요."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyPress={handleEnterKeyPress}
             />
-            <S.Button onClick={searchPlaces}>검색</S.Button>
-            <S.Button onClick={handleCurrentLocation}>현재위치</S.Button>
+            <S.SearchButton onClick={searchPlaces} $color="#e31c5f">
+              검색
+            </S.SearchButton>
+            <S.SearchButton onClick={handleCurrentLocation} $color="#5FBDFF">
+              현 위치로 설정
+            </S.SearchButton>
           </S.SearchBox>
         </div>
+
         <S.SearchContainer>
-          <S.MapContainer id="map" />
+          <S.MapContainer id="map" $isMapOpen={isMapLoading} />
           <S.ResultContainer $showResults={searchResults.length > 0}>
             {searchResults.map((result, index) => (
               <S.ResultItem key={index} onClick={() => navigate(`/detail/${result.id}`)}>
@@ -67,6 +85,9 @@ const Map = () => {
             ))}
           </S.ResultContainer>
         </S.SearchContainer>
+        <S.ModalBox $isOpen={isLoading}>
+          <ModalLoading isOpen={isLoading} />
+        </S.ModalBox>
       </S.Container>
     </>
   );
