@@ -27,6 +27,7 @@ export const Logo = styled.h1`
   cursor: pointer;
   font-size: 30px;
   margin-bottom: 10px;
+  color: rgb(44, 135, 241);
   justify-content: center;
   font-family: 'JalnanGothic';
 `;
