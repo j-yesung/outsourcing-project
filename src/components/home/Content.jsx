@@ -1,9 +1,9 @@
-import * as S from "../../styles/posts/PostContent.styled";
-import { useNavigate } from "react-router-dom";
-import { getFormattedDate } from "utils/date";
-import { useSelector } from "react-redux";
-import { usePosts } from "hooks/usePosts";
-import React from "react";
+import * as S from '../../styles/posts/PostContent.styled';
+import { useNavigate } from 'react-router-dom';
+import { getFormattedDate } from 'utils/date';
+import { useSelector } from 'react-redux';
+import { usePosts } from 'hooks/usePosts';
+import React from 'react';
 
 function Content() {
   const userInfo = useSelector((state) => state.authSlice.userInfo);
@@ -11,25 +11,18 @@ function Content() {
   const { posts } = usePosts();
 
   return (
-    <div style={{ margin: "10px" }}>
-      <div> ⬇️ 나의 매거진 ⬇️</div>
+    <S.Wrapper>
+      <span>내가 작성한 매거진</span>
       {posts
         ?.filter((user) => user.uid === userInfo.uid)
-        .map((item) => {
-          return (
-            <S.TempDiv
-              key={item.id}
-              onClick={() => navigate(`/post/${item.id}`)}
-            >
-              <div>제목 : {item.title}</div>
-              <span>날짜 : {getFormattedDate(item.createdAt)}</span>
-              <div>내용 : {item.contents}</div>
-              <div>게시글 ID : {item.id}</div>
-              <div>게시글 uid : {item.uid}</div>
-            </S.TempDiv>
-          );
-        })}
-    </div>
+        .map((item) => (
+          <S.TempDiv key={item.id} onClick={() => navigate(`/post/${item.id}`)}>
+            <p>제목 : {item.title}</p>
+            <p>내용 : {item.contents}</p>
+            <p>날짜 : {getFormattedDate(item.createdAt)}</p>
+          </S.TempDiv>
+        ))}
+    </S.Wrapper>
   );
 }
 

@@ -1,5 +1,9 @@
 import styled from 'styled-components';
+import { TopWrapper } from 'styles/pages/Profile.styled';
 
+export const Wrapper = styled(TopWrapper)`
+  padding: 20px 20px 20px 40px;
+`;
 export const Container = styled.div`
   margin: 20px auto;
   width: 800px;
