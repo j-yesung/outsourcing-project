@@ -39,6 +39,7 @@ export const HeaderLogo = styled.h1`
   font-weight: 900;
   font-family: 'JalnanGothic';
   display: flex;
+  color: rgb(44, 135, 241);
   align-items: center;
 `;
 export const HeaderSearch = styled.div`

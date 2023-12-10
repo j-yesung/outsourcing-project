@@ -1,4 +1,6 @@
-import * as S from '../../styles/posts/PostContent.styled';
+import ScrollToTopBtn from 'components/posts/ScrollToTopBtn';
+import * as S from '../../styles/posts/PostList.styled';
+import defaultImage from '../../assets/user.svg';
 import { useNavigate } from 'react-router-dom';
 import { getFormattedDate } from 'utils/date';
 import { useSelector } from 'react-redux';
@@ -11,18 +13,30 @@ function Content() {
   const { posts } = usePosts();
 
   return (
-    <S.Wrapper>
-      <S.Title>나의 매거진</S.Title>
-      {posts
-        ?.filter((user) => user.uid === userInfo.uid)
-        .map((item) => (
-          <S.TempDiv key={item.id} onClick={() => navigate(`/post/${item.id}`)}>
-            <p>제목 : {item.title}</p>
-            <p>내용 : {item.contents}</p>
-            <p>날짜 : {getFormattedDate(item.createdAt)}</p>
-          </S.TempDiv>
-        ))}
-    </S.Wrapper>
+    <>
+      <S.PostContainer>
+        <S.HeaderText>내가 작성한 게시글</S.HeaderText>
+        <S.PostWrapper>
+          {posts
+            ?.filter((user) => user.uid === userInfo.uid)
+            .map((item) => {
+              return (
+                <S.PostList key={item.id} onClick={() => navigate(`/post/${item.id}`)}>
+                  <S.PostTitleContentsDate>
+                    <S.PostTitle>{item.title}</S.PostTitle>
+                    <S.PostContent>{item.contents}</S.PostContent>
+                    <S.PostDate>{getFormattedDate(item.createdAt)}</S.PostDate>
+                  </S.PostTitleContentsDate>
+                  <S.Postimge>
+                    <img src={defaultImage} alt="사진" />
+                  </S.Postimge>
+                </S.PostList>
+              );
+            })}
+        </S.PostWrapper>
+      </S.PostContainer>
+      <ScrollToTopBtn />
+    </>
   );
 }
 

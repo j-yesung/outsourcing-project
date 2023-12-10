@@ -5,11 +5,10 @@ export const PostContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 10px 0;
-  cursor: pointer;
 `;
 export const PostWrapper = styled.div`
   width: 75%;
-  max-width: 940px;
+  max-width: 1060px;
   min-width: 850px;
   height: 100%;
   margin: auto;
@@ -27,9 +26,9 @@ export const PostList = styled.li`
   height: 200px;
   margin: auto;
   gap: 40px;
+  cursor: pointer;
   &:hover {
     background-color: #f0f0f099;
-    /* #c2e0f04f; */
   }
 `;
 export const PostTitle = styled.div`
@@ -39,7 +38,6 @@ export const PostTitle = styled.div`
   margin: 0 auto;
   font-weight: 1000;
   line-height: 120%;
-  
 `;
 export const PostContent = styled.div`
   height: 135px;
@@ -72,4 +70,14 @@ export const Postimge = styled.div`
     width: 150px;
     height: 150px;
   }
+`;
+
+export const HeaderText = styled.h1`
+  display: flex;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  margin-right: 900px;
 `;

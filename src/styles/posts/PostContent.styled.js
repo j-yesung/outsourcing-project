@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { SearchButton } from 'styles/kakaoMap/kakaoMap.styled';
 import { TopWrapper } from 'styles/pages/Profile.styled';
 
 export const Wrapper = styled(TopWrapper)`
@@ -31,10 +32,8 @@ export const PostTitleEdit = styled.input`
 export const PostDate = styled.div``;
 
 export const PostBtn = styled.div`
-  & button {
-    background-color: transparent;
-    margin: 0 10px;
-  }
+  gap: 10px;
+  display: flex;
 `;
 
 export const PostContent = styled.div`
@@ -55,4 +54,17 @@ export const TempDiv = styled.div`
     transform: translateY(-2px);
     box-shadow: 2px 2px 8px #ccc;
   }
+`;
+
+export const UpdateButton = styled(SearchButton)`
+  width: 60px;
+  padding: 5px;
+  margin-bottom: 10px;
+`;
+
+export const LikeButton = styled.button`
+  border: 0;
+  background-color: transparent;
+  float: right;
+  margin-top: 20px;
 `;
