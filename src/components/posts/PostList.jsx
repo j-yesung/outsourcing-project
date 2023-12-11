@@ -5,23 +5,17 @@ import * as S from '../../styles/posts/PostList.styled';
 import { getFormattedDate } from 'utils/date';
 import defaultImage from '../../assets/food.jpg';
 import ScrollToTopBtn from './ScrollToTopBtn';
-import { useInView } from 'react-intersection-observer';
 
 const PostList = () => {
   const { posts } = usePosts();
   const navigate = useNavigate();
-  const [postscroll, setPostscroll] = useState(posts?.slice(0, 7));
-  const [pages, setPages] = useState(11);
+  const [postscroll, setPostscroll] = useState(posts?.slice(0, 10));
+  const [pages, setPages] = useState(20);
 
-  const [ref, inView] = useInView();
-
-  useEffect(() => {
-    if (inView) {
-      setPages(pages + 4);
-      setPostscroll(posts?.slice(0, pages));
-    }
-  }, [inView]);
-
+  const onClickHandler = () => {
+    setPages(pages + 10);
+    setPostscroll(posts?.slice(0, pages));
+  };
   return (
     <>
       <S.PostContainer>
@@ -40,8 +34,10 @@ const PostList = () => {
               </S.PostList>
             );
           })}
-          <div ref={ref}></div>
         </S.PostWrapper>
+        <S.PostMoreBtn>
+          <button onClick={onClickHandler}>More</button>
+        </S.PostMoreBtn>
       </S.PostContainer>
       <ScrollToTopBtn />
     </>
