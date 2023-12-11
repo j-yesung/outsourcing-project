@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import * as S from '../../styles/posts/PostList.styled';
 import { getFormattedDate } from 'utils/date';
 import defaultImage from '../../assets/food.jpg';
-
 import ScrollToTopBtn from './ScrollToTopBtn';
+
 const PostList = () => {
   const { posts } = usePosts();
   const navigate = useNavigate();
