@@ -12,11 +12,10 @@ function Content() {
   const userInfo = useSelector((state) => state.authSlice.userInfo);
   const navigate = useNavigate();
   const { posts, postsLoading } = usePosts();
-  const likePosts = posts.filter((item) => item.likedBy.includes(userInfo.uid));
-
   if (postsLoading) {
     return <M.Loader />;
   }
+  const likePosts = posts.filter((item) => item.likedBy.includes(userInfo.uid));
 
   return (
     <>

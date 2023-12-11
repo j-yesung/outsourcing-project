@@ -3,11 +3,9 @@ import styled from 'styled-components';
 export const HomeWrapper = styled.div`
   gap: 10px;
   width: 100vw;
-  /* padding: 20px; */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  flex-direction: column;
   justify-content: center;
 `;
 export const FnbWrapper = styled.div`
@@ -17,10 +15,10 @@ export const FnbWrapper = styled.div`
   justify-content: center;
 `;
 export const FnbList = styled.div`
-  gap: 20px;
+  gap: 10px;
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 220px;
   height: 200px;
   padding: 30px;
   cursor: pointer;
@@ -32,5 +30,11 @@ export const FnbList = styled.div`
 `;
 
 export const ListName = styled.p`
+  font-size: 18px;
   font-family: 'JalnanGothic';
+`;
+
+export const ListCategoryName = styled.p`
+  color: #e31c5f;
+  font-weight: bold;
 `;

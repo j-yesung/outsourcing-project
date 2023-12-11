@@ -52,6 +52,7 @@ export const NameBox = styled.div`
 export const Nickname = styled.p`
   padding: 10px;
   font-size: 30px;
+  min-width: 190px;
   font-family: 'LINESeedKR-Bd';
 `;
 export const EditNameInput = styled.input`
