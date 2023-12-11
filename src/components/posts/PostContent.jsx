@@ -76,8 +76,12 @@ const PostDetail = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <S.PostDate>{getFormattedDate(createdAt)}</S.PostDate>
               <S.PostBtn>
-                <button onClick={() => setIsEditing(false)}>취소</button>
-                <button onClick={updateHandler}>완료</button>
+                <S.UpdateButton $color="#e31c5f" onClick={() => setIsEditing(false)}>
+                  취소
+                </S.UpdateButton>
+                <S.UpdateButton $color="#e31c5f" onClick={updateHandler}>
+                  완료
+                </S.UpdateButton>
               </S.PostBtn>
             </div>
           </S.PostHeader>
@@ -122,7 +126,7 @@ const PostDetail = () => {
               )}
             </div>
           </S.PostHeader>
-          <S.LikeButton onClick={() => increaseLike({ postId: id, uid })}>
+          <S.LikeButton onClick={() => increaseLike({ postId: id, uid: userInfo.uid })}>
             <S.LikeImg src={likeHeart} width={30} alt="사진" />
             <span>{likes === 0 ? '' : likes}</span>
           </S.LikeButton>
