@@ -111,14 +111,14 @@ const Write = () => {
           ref={editorRef}
         />{' '}
         <div style={{ marginTop: '15px' }}>
-          <S.PostThumbnailInput
-            value={input}
-            placeholder="첨부파일"
+          <S.PostThumbnailInput value={input} placeholder="첨부파일" onChange={() => {}} />
+          <S.PostThumbnailLabel htmlFor="file">썸네일 등록</S.PostThumbnailLabel>
+          <S.PostThumbnailChkInput
+            type="file"
+            id="file"
+            onChange={(e) => setInput(e.currentTarget.files[0].name)}
             ref={(props) => (inputRef.current['img'] = props)}
-            onChange={() => {}}
           />
-          <S.PostThumbnailLabel for="file">썸네일 등록</S.PostThumbnailLabel>
-          <S.PostThumbnailChkInput type="file" id="file" onChange={(e) => setInput(e.currentTarget.files[0].name)} />
         </div>
       </Box>
 
