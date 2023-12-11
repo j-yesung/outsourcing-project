@@ -68,3 +68,13 @@ export const LikeButton = styled.button`
   float: right;
   margin-top: 20px;
 `;
+export const LikeImg = styled.img`
+  -webkit-transform: scale(1);
+  transform: scale(1);
+  -webkit-transition: 0.5s ease-in-out;
+  transition: 0.5s ease-in-out;
+  &:hover {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+`;

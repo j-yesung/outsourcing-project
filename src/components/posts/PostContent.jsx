@@ -41,8 +41,6 @@ const PostDetail = () => {
   const editTitleRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
   const { likes, increaseLike } = useLikes(id);
-  const [liked, setLiked] = useState(false);
-  console.log('likes: ', likes);
   const { posts, postsLoading, __updatePosts, __deletePosts } = usePosts();
   const { title, contents, createdAt, uid } = posts ? posts.find((item) => item.id === id) : [];
   const userInfo = useSelector((state) => state.authSlice.userInfo);
@@ -63,11 +61,6 @@ const PostDetail = () => {
     const updates = { title: editTitleRef.current.value, contents: contentMark };
     __updatePosts({ id, updates });
     setIsEditing(false);
-  };
-
-  const likeHandler = () => {
-    increaseLike({ postId: id, uid });
-    setLiked(!liked);
   };
 
   if (postsLoading) {
@@ -129,13 +122,8 @@ const PostDetail = () => {
               )}
             </div>
           </S.PostHeader>
-          <S.LikeButton onClick={likeHandler}>
-            <img
-              src={likeHeart}
-              width={30}
-              style={{ filter: liked ? 'invert(100%)' : 'invert(0%)' }}
-              alt="사진"
-            />
+          <S.LikeButton onClick={() => increaseLike({ postId: id, uid })}>
+            <S.LikeImg src={likeHeart} width={30} alt="사진" />
             <span>{likes === 0 ? '' : likes}</span>
           </S.LikeButton>
           <S.PostContent>
