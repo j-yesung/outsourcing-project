@@ -6,6 +6,20 @@ export const PostContainer = styled.div`
   height: 100%;
   padding: 10px 0;
 `;
+export const PostMoreBtn = styled.div`
+  text-align: center;
+  & button {
+    margin-top: 10px;
+    border: none;
+    height: 50px;
+    font-size: 24px;
+    color: #a9a9a9;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+`;
+
 export const PostWrapper = styled.div`
   width: 75%;
   max-width: 1060px;
