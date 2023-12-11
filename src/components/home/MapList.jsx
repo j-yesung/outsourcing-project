@@ -19,15 +19,15 @@ const MapList = () => {
   useKakaoMap(originData, mapRef);
   useEffect(() => {
     // 예외처리
-    if (originData.id === params.id) {
-      // console.log('추가 안함..');
-      return;
-    } else {
-      addToMapListDatabase(originData, ExtractCategoryNames(originData));
-      // console.log('추가..');
-    }
+    // if (originData.id === params.id) {
+    //   // console.log('추가 안함..');
+    //   return;
+    // } else {
+    //   // console.log('추가..');
+    // }
   }, [originData, params.id]);
 
+  addToMapListDatabase(originData, ExtractCategoryNames(originData));
   return (
     <>
       {originData !== undefined ? (

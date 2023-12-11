@@ -7,6 +7,7 @@ export const HomeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
 `;
 export const FnbWrapper = styled.div`
@@ -16,6 +17,9 @@ export const FnbWrapper = styled.div`
   justify-content: center;
 `;
 export const FnbList = styled.div`
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
   width: 200px;
   height: 200px;
   padding: 30px;
@@ -25,4 +29,8 @@ export const FnbList = styled.div`
   &:hover {
     background-color: aliceblue;
   }
+`;
+
+export const ListName = styled.p`
+  font-family: 'JalnanGothic';
 `;
