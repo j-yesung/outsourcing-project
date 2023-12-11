@@ -10,6 +10,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
 
+
 const FnbList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const FnbList = () => {
     };
     fetchData();
   }, [dispatch]);
-
+console.log("item", fnbData)
   return (
     <>
       {fnbData && (
@@ -41,12 +42,15 @@ const FnbList = () => {
           navigation
           pagination={{ clickable: true }}
           loop={true}
+          slidesPerGroup = {3}
         >
           {fnbData.map((item, index) => (
             <SwiperSlide key={index}>
               <S.FnbWrapper>
                 <S.FnbList onClick={() => navigate(`/detail/${item.id}`)}>
                   {/* 이미지가 들어가야 합니다. */}
+                  <p>{item.road_address_name}</p>
+                  <p>{item.category_group_name}</p>
                   <p>{item.place_name}</p>
                 </S.FnbList>
               </S.FnbWrapper>
